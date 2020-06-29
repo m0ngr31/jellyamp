@@ -1,8 +1,35 @@
-import { app, protocol, BrowserWindow, session } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import {
   createProtocol,
   installVueDevtools,
 } from 'vue-cli-plugin-electron-builder/lib';
+import path from 'path';
+
+// import Player from 'mpris-service';
+
+// const player = Player({
+// 	name: 'Jellyamp',
+// 	identity: 'Jellyamp',
+// 	supportedUriSchemes: ['file'],
+// 	supportedMimeTypes: ['audio/aac'],
+// 	supportedInterfaces: ['player']
+// });
+
+// setTimeout(function () {
+// 	// @see http://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata/
+// 	player.metadata = {
+// 		'mpris:trackid': player.objectPath('track/0'),
+// 		'mpris:length': 60 * 1000 * 1000, // In microseconds
+// 		'mpris:artUrl': 'https://s1.ibtimes.com/sites/www.ibtimes.com/files/2016/11/08/adele.jpg',
+// 		'xesam:title': 'Lolol',
+// 		'xesam:album': '21',
+// 		'xesam:artist': ['Adele']
+// 	};
+
+// 	player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
+
+// 	console.log('Now playing: Lolol - Adele - 21');
+// }, 1000);
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -19,13 +46,16 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 400,
-    height: 550,
+    height: 600,
     resizable: false,
+    maximizable: false,
     frame: false,
     backgroundColor: '#000B25',
+    titleBarStyle: 'hidden',
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
     },
   });
@@ -43,6 +73,8 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   });
+
+  win.on('maximize', () => win.unmaximize());
 }
 
 // Quit when all windows are closed.

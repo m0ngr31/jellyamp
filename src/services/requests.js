@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4 } from 'uuid';
 
-import jellyfin from './jellyfin';
-import { getItemOrDefault, setItem } from './localstorage';
+import JellyfinService from './jellyfin';
+import {getItemOrDefault, setItem} from './localstorage';
 
-const genConfig = (url, isJellyfin, needsAuth, isPost = false) => {
+const genConfig = (url, isJellyfin, needsAuth) => {
   const config = {};
 
   if (isJellyfin) {
@@ -16,9 +16,10 @@ const genConfig = (url, isJellyfin, needsAuth, isPost = false) => {
     }
 
     config.headers = {};
-    config.headers['X-Emby-Authorization'] = `MediaBrowser Client="JellyAmp", Device="PC", DeviceId="${deviceId}", Version="10.5.0"`;
+    config.headers['X-Emby-Authorization'] =
+      `MediaBrowser Client="JellyAmp", Device="PC", DeviceId="${deviceId}", Version="10.5.0"`;
 
-    const serverUrl = jellyfin.getServer();
+    const serverUrl = JellyfinService.getServer().uri;
 
     if (!serverUrl) {
       throw new Error('No server information');
@@ -27,18 +28,21 @@ const genConfig = (url, isJellyfin, needsAuth, isPost = false) => {
     url = `${serverUrl}${url}`;
 
     if (needsAuth) {
-      config.headers['X-MediaBrowser-Token'] = '';
+      const token = JellyfinService.getToken();
+      if (token) {
+        config.headers['X-MediaBrowser-Token'] = token;
+      }
     }
   }
 
   return [url, config];
-};
+}
 
 export const Requests = {
   post: async (url, obj, jellyfinUrl = true, requiresAuth = true) => {
     const [uri, config] = genConfig(url, jellyfinUrl, requiresAuth);
 
-    const { data } = await axios.post(uri, obj, config);
+    const {data} = await axios.post(uri, obj, config);
     return data;
   },
   get: async (url, obj, jellyfinUrl, requiresAuth = true) => {
@@ -48,7 +52,7 @@ export const Requests = {
       config.params = obj;
     }
 
-    const { data } = await axios.get(uri, config);
+    const {data} = await axios.get(uri, config);
     return data;
   },
 };

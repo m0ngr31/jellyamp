@@ -1,13 +1,18 @@
 import Vue from 'vue';
+import Buefy from 'buefy';
+import VueTitlebar from '@wuild/vue-titlebar';
 
 import App from './App.vue';
 import router from './router';
 
-import jellyfin from './services/jellyfin';
+import JellyfinService from './services/jellyfin';
 
 Vue.config.productionTip = false;
 
-console.log(jellyfin);
+console.log(JellyfinService);
+
+Vue.use(Buefy);
+Vue.use(VueTitlebar);
 
 new Vue({
   router,
