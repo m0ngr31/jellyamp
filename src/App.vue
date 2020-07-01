@@ -84,14 +84,8 @@ html, body
   width: 50px !important;
 }
 
-.scroller {
-  /* height: 75vh; */
-  overflow-y: auto;
-  height: calc(85vh - 125px);
-}
-
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 0px;
 }
 
 ::-webkit-scrollbar-track {
@@ -106,6 +100,10 @@ html, body
   background: #555;
 }
 
+.overflowY {
+  overflow-y: auto;
+}
+
 html, body {
   /* height: 100vh; */
   margin: 0;
@@ -115,7 +113,16 @@ html, body {
   -webkit-app-region: drag
 }
 
-button, input, .scroller, audio {
+button, input, .player, .no-grab, .container, .mini-player {
   -webkit-app-region: no-drag;
+}
+
+@keyframes slide-up {
+  0% {
+    top: 100vh;
+  }
+  100% {
+    top: 0px;
+  }
 }
 </style>

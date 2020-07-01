@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="height: 85vh">
+    <div :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`">
       <router-view />
     </div>
     <Player />
@@ -12,6 +12,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import Player from '../components/Player';
+import PlayerService from '../services/player';
 
 @Component({
   name: 'Main',
@@ -20,10 +21,7 @@ import Player from '../components/Player';
   },
 })
 export default class Main extends Vue {
-  mounted() {
-    if (this.$route.name !== 'Search') {
-      this.$router.push({ name: 'Search' });
-    }
-  }
+  isElectron = window.ipcRenderer ? true : false;
+  player = Player;
 }
 </script>

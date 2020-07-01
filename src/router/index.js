@@ -29,7 +29,7 @@ const routes = [
     meta: { auth: true },
     children: [
       {
-        path: 'search',
+        path: '',
         name: 'Search',
         component: Search,
       },
@@ -68,7 +68,9 @@ router.beforeEach(async (to, from, next) => {
   if (requiresAuth && !currentUser.Id) {
     await next({ name: 'Login' });
   } else if (!requiresAuth && currentUser.Id) {
-    await next({ name: 'Main' });
+    await next({ name: 'Search' });
+  } else if (to.name === 'Main') {
+    await next({ name: 'Search' });
   } else {
     await next();
   }

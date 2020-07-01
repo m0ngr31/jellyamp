@@ -2,7 +2,7 @@
   <div class="columns is-mobile is-centered">
     <div class="column is-three-quarters-mobile is-one-third-widescreen">
       <div class="logo">
-        <img src="../assets/jellyfin_logo.png" width="150">
+        <img src="../assets/logo.png" width="150">
         <h1 class="title is-2">Jellyamp</h1>
       </div>
       <section v-if="!showUser">

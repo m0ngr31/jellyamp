@@ -5,33 +5,12 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib';
 import path from 'path';
 
-// import Player from 'mpris-service';
-
-// const player = Player({
-// 	name: 'Jellyamp',
-// 	identity: 'Jellyamp',
-// 	supportedUriSchemes: ['file'],
-// 	supportedMimeTypes: ['audio/aac'],
-// 	supportedInterfaces: ['player']
-// });
-
-// setTimeout(function () {
-// 	// @see http://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata/
-// 	player.metadata = {
-// 		'mpris:trackid': player.objectPath('track/0'),
-// 		'mpris:length': 60 * 1000 * 1000, // In microseconds
-// 		'mpris:artUrl': 'https://s1.ibtimes.com/sites/www.ibtimes.com/files/2016/11/08/adele.jpg',
-// 		'xesam:title': 'Lolol',
-// 		'xesam:album': '21',
-// 		'xesam:artist': ['Adele']
-// 	};
-
-// 	player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
-
-// 	console.log('Now playing: Lolol - Adele - 21');
-// }, 1000);
+let player;
+let Player;
+let playerHandler;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const isLinux = process.platform === 'linux';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -46,12 +25,13 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 400,
-    height: 600,
+    height: 700,
     resizable: false,
     maximizable: false,
     frame: false,
     backgroundColor: '#000B25',
     titleBarStyle: 'hidden',
+    icon: path.join(__static, 'icon.png'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -94,6 +74,9 @@ app.on('activate', () => {
   }
 });
 
+// Disable Chrome's lame MPRIS implementation
+app.commandLine.appendSwitch('disable-features', 'MediaSessionService');
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -108,6 +91,66 @@ app.on('ready', async () => {
   }
 
   createWindow();
+});
+
+const setupPlayer = ev => {
+  if (isLinux) {
+    Player = require('mpris-service');
+
+    player = Player({
+      name: 'Jellyamp',
+      identity: 'Jellyamp',
+      supportedUriSchemes: ['file'],
+      supportedMimeTypes: ['audio/aac'],
+      supportedInterfaces: ['player'],
+      canSeek: false,
+    });
+
+    playerHandler = ev;
+
+    player.on('next', () => playerHandler.reply('skip'));
+    player.on('previous', () => playerHandler.reply('prev'));
+    player.on('pause', () => playerHandler.reply('playPause'));
+    player.on('playpause', () => playerHandler.reply('playPause'));
+    player.on('play', () => playerHandler.reply('playPause'));
+    player.on('stop', () => playerHandler.reply('stop'));
+    player.on('quit', () => app.quit());
+    player.on('raise', () => win.restore());
+  } else {
+    player = {
+      objectPath: () => null,
+    };
+    Player = {
+      PLAYBACK_STATUS_PLAYING: null,
+      PLAYBACK_STATUS_PAUSED: null,
+      PLAYBACK_STATUS_STOPPED: null,
+    };
+  }
+};
+
+ipcMain.on('play', (ev, data) => {
+  if (!player) {
+    setupPlayer(ev);
+  }
+
+  player.metadata = {
+    'mpris:trackid': player.objectPath('track/0'),
+    'mpris:length': 0,
+    'mpris:artUrl': data.img,
+    'xesam:title': data.name,
+    'xesam:album': data.album,
+    'xesam:artist': data.artist,
+  };
+
+  player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
+});
+
+ipcMain.on('pause', () => {
+  player.playbackStatus = Player.PLAYBACK_STATUS_PAUSED;
+});
+
+ipcMain.on('stop', () => {
+  player.playbackStatus = Player.PLAYBACK_STATUS_STOPPED;
 });
 
 // Exit cleanly on request from parent process in development mode.

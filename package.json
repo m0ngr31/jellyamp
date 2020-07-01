@@ -9,7 +9,8 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
   },
   "main": "background.js",
   "dependencies": {
@@ -21,6 +22,7 @@
     "bulmaswatch": "^0.8.1",
     "core-js": "^3.6.5",
     "howler": "^2.2.0",
+    "lodash": "^4.17.15",
     "uuid": "^8.2.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
@@ -35,6 +37,7 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "electron": "^9.0.0",
+    "electron-icon-builder": "^1.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",

@@ -1,0 +1,69 @@
+<template>
+  <div class="column is-half-mobile is-1-tablet item-title" @click="gotoItem">
+    <img src="../assets/logo.png" class="logo">
+    <p class="subtitle is-6 item-name">{{ item.Name }}</p>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+import JellyfinService from '../services/jellyfin';
+
+@Component({
+  name: 'ItemTile',
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+    itemType: {
+      type: String,
+      required: true,
+    }
+  },
+})
+export default class ItemTile extends Vue {
+  mounted() {
+    const itemUrl = JellyfinService.getItemImageUrl(this.item);
+
+    if (itemUrl) {
+      this.$el.children[0].setAttribute('src', itemUrl);
+    }
+  }
+
+  gotoItem() {
+    if (this.itemType === 'artist') {
+      this.$router.push({ name: 'Artist', params: { id: this.item.Id }});
+    } else if (this.itemType === 'song') {
+      this.$router.push({ name: 'Song', params: { id: this.item.Id }});
+    } else if (this.itemType === 'album') {
+      this.$router.push({ name: 'Album', params: { id: this.item.Id }});
+    }
+  }
+}
+</script>
+
+<style scoped>
+.item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logo {
+  max-width: 185px;
+  max-height: 185px;
+  min-width: 185px;
+  min-height: 185px;
+}
+</style>
+
+<style>
+.columns.is-gapless > .column .item-title {
+  padding: 5px 5px 5px 0px !important;
+  text-align: center;
+  margin-top: auto;
+}
+</style>

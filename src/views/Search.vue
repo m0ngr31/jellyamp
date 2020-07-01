@@ -13,15 +13,20 @@
               <div class="progress is-small" v-if="!isSearching"></div>
             </div>
           </div>
-          <div class="columns is-centered scroller is-gapless" style="padding-left: 10px" v-if="player.all_artists.length">
+          <div
+            class="columns is-centered is-gapless no-grab scrolling-area"
+            v-if="searchService.all_artists.length"
+            :style="`height: calc(100vh ${player.player ? '- 60px' : ''} - 120px ${isElectron ? '- 28px' : ''})`"
+          >
             <div class="column">
               <p class="title">Artists</p>
               <div class="columns is-mobile is-gapless is-multiline">
-                <ArtistsTile
-                  v-for="artist of player.all_artists"
+                <ItemTile
+                  v-for="artist of searchService.all_artists"
                   v-bind:key="artist.Id"
-                  :artist="artist"
-                ></ArtistsTile>
+                  :item="artist"
+                  item-type="artist"
+                ></ItemTile>
               </div>
             </div>
           </div>
@@ -35,27 +40,30 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 
-import ArtistsTile from "../components/ArtistsTile";
+import ItemTile from "../components/ItemTile";
 
 import PlayerService from "../services/player";
 import JellyfinService from "../services/jellyfin";
+import SearchService from "../services/search";
 
 @Component({
   name: "Search",
   components: {
-    ArtistsTile
+    ItemTile
   }
 })
 export default class Search extends Vue {
+  isElectron = window.ipcRenderer ? true : false;
   search = "";
 
   player = PlayerService;
+  searchService = SearchService;
 
   isLoading = false;
   isSearching = false;
 
   mounted() {
-    if (!this.player.all_artists.length) {
+    if (!this.searchService.all_artists.length) {
       this.getArtists();
     }
   }
@@ -64,7 +72,7 @@ export default class Search extends Vue {
     this.isLoading = true;
 
     try {
-      this.player.all_artists = await JellyfinService.getArtists();
+      this.searchService.all_artists = await JellyfinService.getArtists();
     } catch (e) {
       console.log(e);
     } finally {
@@ -77,6 +85,11 @@ export default class Search extends Vue {
 <style scoped>
 .top {
   margin-top: 35px;
+}
+
+.scrolling-area {
+  padding-left: 10px;
+  overflow-y: auto;
 }
 </style>
 

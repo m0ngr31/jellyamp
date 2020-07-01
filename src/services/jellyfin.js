@@ -65,8 +65,39 @@ const JellyfinService = {
     const artists = await Requests.get('Artists', {userId}, true, true);
     return artists.Items;
   },
-  getArtistUrl: artist => {
-    const keys = Object.keys(artist.ImageTags);
+  getItem: async artistId => {
+    const userId = JellyfinService.getUser().Id;
+    return Requests.get(`Users/${userId}/Items/${artistId}`, null, true, true);
+  },
+  getArtistAlbums: async artistId => {
+    const params = {
+      AlbumArtistIds: artistId,
+      Recursive: true,
+      IncludeItemTypes: ['MusicAlbum', 'Audio'],
+      SortOrder: 'Descending',
+      Limit: 500,
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
+
+    const songs = res.Items.filter(item => item.Type === 'Audio');
+    const albums = res.Items.filter(item => item.Type === 'MusicAlbum');
+
+    return [songs, albums];
+  },
+  getAlbumSongs: async ParentId => {
+    const params = {
+      ParentId,
+      SortBy: 'SortName',
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
+    return res.Items;
+  },
+  getItemImageUrl: item => {
+    const keys = Object.keys(item.ImageTags);
 
     if (!keys.length) {
       return null;
@@ -81,7 +112,18 @@ const JellyfinService = {
     }
 
     const serverUri = JellyfinService.getServer().uri;
-    return `${serverUri}Items/${artist.Id}/Images/${imageKey}`;
+    return `${serverUri}Items/${item.Id}/Images/${imageKey}`;
+  },
+  getInstantMix: async itemId => {
+    const UserId = JellyfinService.getUser().Id;
+
+    const params = {
+      UserId,
+      Limit: 200,
+    };
+
+    const songs = await Requests.get(`Items/${itemId}/InstantMix`, params, true, true);
+    return songs.Items;
   },
   getItemPlayUrl: (itemId) => {
     const params = {
@@ -100,7 +142,7 @@ const JellyfinService = {
 
     const serverUri = JellyfinService.getServer().uri;
     return `${serverUri}Audio/${itemId}/universal?${urlParams}`;
-  }
+  },
 };
 
 export default JellyfinService;
