@@ -1,6 +1,6 @@
 # Jellyamp: Desktop music player for Jellyfin
 
-<!-- [![Build Status](https://travis-ci.org/m0ngr31/jellyamp.svg?branch=master)](https://travis-ci.org/m0ngr31/jellyamp) -->
+[![Build Status](https://travis-ci.org/m0ngr31/jellyamp.svg?branch=master)](https://travis-ci.org/m0ngr31/jellyamp)
 
 <p align="center">
   <img src="https://i.imgur.com/jhZo5UI.png" width="200"/>
