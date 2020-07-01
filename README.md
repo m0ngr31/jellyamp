@@ -1,24 +1,30 @@
-# jellyamp
+# Jellyamp: Desktop music player for Jellyfin
 
-## Project setup
-```
-npm install
-```
+<!-- [![Build Status](https://travis-ci.org/m0ngr31/jellyamp.svg?branch=master)](https://travis-ci.org/m0ngr31/jellyamp) -->
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+<p align="center">
+  <img src="https://i.imgur.com/jhZo5UI.png" width="200"/>
+</p>
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## About
+A stylish, cross-platform desktop client for listening to music from a Jellyfin server. Inspired by Plexamp. 
 
-### Lints and fixes files
-```
-npm run lint
-```
+## In Action
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Login: Server setup
+<img src="https://i.imgur.com/XLKQCvD.png" style="max-width: 400px">
+
+### Login: User authentication
+<img src="https://i.imgur.com/CepOWaX.png" style="max-width: 400px">
+
+### Browsing Music
+<img src="https://i.imgur.com/BtWkrYG.png" style="max-width: 400px">
+
+### Artist Page
+<img src="https://i.imgur.com/kx77rl0.png" style="max-width: 400px">
+
+### Player
+<img src="https://i.imgur.com/HmVRw8r.png" style="max-width: 400px">
+
+### Playlist Page
+<img src="https://i.imgur.com/6dTb11U.png" style="max-width: 400px">
