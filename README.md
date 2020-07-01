@@ -13,30 +13,30 @@ A stylish, cross-platform desktop client for listening to music from a Jellyfin 
 
 ### Login: Server setup
 <p>
-  <img src="https://i.imgur.com/XLKQCvD.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/XLKQCvD.png" width="400">
 </p>
 
 ### Login: User authentication
 <p>
-  <img src="https://i.imgur.com/CepOWaX.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/CepOWaX.png" width="400">
 </p>
 
 ### Browsing Music
 <p>
-  <img src="https://i.imgur.com/BtWkrYG.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/BtWkrYG.png" width="400">
 </p>
 
 ### Artist Page
 <p>
-  <img src="https://i.imgur.com/kx77rl0.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/kx77rl0.png" width="400">
 </p>
 
 ### Player
 <p>
-  <img src="https://i.imgur.com/HmVRw8r.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/HmVRw8r.png" width="400">
 </p>
 
 ### Playlist Page
 <p>
-  <img src="https://i.imgur.com/6dTb11U.png" style="max-width: 200px">
+  <img src="https://i.imgur.com/6dTb11U.png" width="400">
 </p>
