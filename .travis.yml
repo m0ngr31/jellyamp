@@ -27,7 +27,7 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "npm run electron:build -- --linux --win -p always"
+        /bin/bash -c "npm ci && npm run electron:build -- --linux --win -p always"
     else
       npm run electron:build -- --mac -p always
     fi
