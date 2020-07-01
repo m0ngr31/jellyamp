@@ -1,0 +1,42 @@
+productName: Jellyamp
+appId: me.ipson.jellyamp
+compression: normal
+
+mac:
+  category: Audio
+  icon: ./icons/icon.icns
+  target:
+    - target: dmg
+
+  hardenedRuntime: true
+  gatekeeperAssess: false
+
+dmg:
+  # The inner app inside the .dmg is signed and there is some broken logic
+  # which requires that the DMG itself is not signed.
+  sign: false
+
+linux:
+  artifactName: ${name}-${version}-${arch}.${ext}
+  synopsis: Jellyamp
+  executableName: Jellyamp
+  category: Audio
+  target:
+    - target: deb
+    - target: AppImage
+
+nsis:
+  artifactName: ${name}-${version}-install-${arch}.${ext}
+
+win:
+  artifactName: ${name}-${version}-portable-${arch}.${ext}
+  target:
+    - target: nsis
+    - target: portable
+
+    #- target: portable
+  icon: ./icons/icon-512x512.png
+
+publish:
+  provider: github
+  publishAutoUpdate: always

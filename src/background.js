@@ -88,6 +88,11 @@ app.on('ready', async () => {
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
+  } else {
+    // Prevent DevTools from being opened in production
+    globalShortcut.register('Control+Shift+I', () => {
+      return false
+    });
   }
 
   createWindow();

@@ -9,6 +9,9 @@ module.exports = {
       preload: 'src/preload.js',
       chainWebpackMainProcess: config => {
         config.resolve.alias.set('jsbi', path.join(__dirname, 'node_modules/jsbi/dist/jsbi-cjs.js'));
+      },
+      builderOptions: {
+        publish: ['github']
       }
     },
   },
