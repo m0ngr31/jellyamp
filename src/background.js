@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import {
   createProtocol,
   installVueDevtools,
