@@ -147,15 +147,15 @@ ipcMain.on('play', (ev, data) => {
     'xesam:artist': data.artist,
   };
 
-  player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
+  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_PLAYING : '';
 });
 
 ipcMain.on('pause', () => {
-  player.playbackStatus = Player.PLAYBACK_STATUS_PAUSED;
+  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_PAUSED : '';
 });
 
 ipcMain.on('stop', () => {
-  player.playbackStatus = Player.PLAYBACK_STATUS_STOPPED;
+  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_STOPPED : '';
 });
 
 // Exit cleanly on request from parent process in development mode.
