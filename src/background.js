@@ -121,42 +121,43 @@ const setupPlayer = ev => {
     player.on('stop', () => playerHandler.reply('stop'));
     player.on('quit', () => app.quit());
     player.on('raise', () => win.restore());
-  } else {
-    player = {
-      objectPath: () => null,
-    };
-    Player = {
-      PLAYBACK_STATUS_PLAYING: null,
-      PLAYBACK_STATUS_PAUSED: null,
-      PLAYBACK_STATUS_STOPPED: null,
-    };
   }
 };
 
-ipcMain.on('play', (ev, data) => {
-  if (!player) {
-    setupPlayer(ev);
-  }
+if (process.platform === 'linux') {
+  ipcMain.on('play', (ev, data) => {
+    if (!player) {
+      setupPlayer(ev);
+    }
 
-  player.metadata = {
-    'mpris:trackid': player.objectPath('track/0'),
-    'mpris:length': 0,
-    'mpris:artUrl': data.img,
-    'xesam:title': data.name,
-    'xesam:album': data.album,
-    'xesam:artist': data.artist,
-  };
+    player.metadata = {
+      'mpris:trackid': player.objectPath('track/0'),
+      'mpris:length': 0,
+      'mpris:artUrl': data.img,
+      'xesam:title': data.name,
+      'xesam:album': data.album,
+      'xesam:artist': data.artist,
+    };
 
-  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_PLAYING : '';
-});
+    player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
+  });
 
-ipcMain.on('pause', () => {
-  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_PAUSED : '';
-});
+  ipcMain.on('pause', () => {
+    if (!player) {
+      setupPlayer(ev);
+    }
 
-ipcMain.on('stop', () => {
-  player.playbackStatus = Player ? Player.PLAYBACK_STATUS_STOPPED : '';
-});
+    player.playbackStatus = Player.PLAYBACK_STATUS_PAUSED;
+  });
+
+  ipcMain.on('stop', () => {
+    if (!player) {
+      setupPlayer(ev);
+    }
+
+    player.playbackStatus = Player.PLAYBACK_STATUS_STOPPED;
+  });
+}
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
