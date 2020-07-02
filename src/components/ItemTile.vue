@@ -1,7 +1,7 @@
 <template>
   <div class="column is-half-mobile is-1-tablet item-title" @click="gotoItem">
-    <img src="../assets/logo.png" class="logo">
-    <p class="subtitle is-6 item-name">{{ item.Name }}</p>
+    <img src="../assets/logo.png" loading="lazy" class="logo">
+    <p class="subtitle is-6 item-name" v-if="!disableClick">{{ item.Name }}</p>
   </div>
 </template>
 
@@ -21,6 +21,10 @@ import JellyfinService from '../services/jellyfin';
     itemType: {
       type: String,
       required: true,
+    },
+    disableClick: {
+      type: Boolean,
+      required: false,
     }
   },
 })
@@ -34,6 +38,9 @@ export default class ItemTile extends Vue {
   }
 
   gotoItem() {
+    if (this.disableClick) {
+      return;
+    }
     if (this.itemType === 'artist') {
       this.$router.push({ name: 'Artist', params: { id: this.item.Id }});
     } else if (this.itemType === 'song') {

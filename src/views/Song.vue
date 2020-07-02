@@ -27,6 +27,7 @@
           </b-tooltip>
         </div>
       </div>
+      <ItemTile v-if="song.Id" :item="song" item-type="song" :disable-click="true"></ItemTile>
     </div>
   </div>
 </template>
@@ -84,16 +85,30 @@ export default class Song extends Vue {
   async getRadio() {
     const songs = await JellyfinService.getInstantMix(this.$route.params.id);
     PlayerService.setPlaylist(songs);
+
+    this.$buefy.toast.open({
+      message: 'Starting song radio',
+      type: 'is-success'
+    });
   }
 
   playSongs(inject = false) {
     let songs = [_.cloneDeep(this.song)];
 
+    let message;
+
     if (inject) {
       PlayerService.injectPlaylist(songs);
+      message = 'Injected song into playlist';
     } else {
       PlayerService.setPlaylist(songs);
+      message = 'Playing song';
     }
+
+    this.$buefy.toast.open({
+      message,
+      type: 'is-success'
+    });
   }
 }
 </script>

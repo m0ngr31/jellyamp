@@ -15,17 +15,17 @@
               <b-icon level-item size="is-medium" icon="radio"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Play Artist Songs" position="is-left">
+          <b-tooltip label="Play Artist Songs" position="is-left" v-if="hasSongs">
             <div @click="playSongs()">
               <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Shuffle Artist Songs" position="is-left">
+          <b-tooltip label="Shuffle Artist Songs" position="is-left" v-if="hasSongs">
             <div @click="playSongs(true)">
               <b-icon level-item size="is-medium" icon="shuffle-variant" style="margin-right: 10px;"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Inject Artist Songs into current playlist" position="is-left">
+          <b-tooltip label="Inject Artist Songs into current playlist" position="is-left" v-if="hasSongs">
             <div @click="playSongs(false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus"></b-icon>
             </div>
@@ -33,8 +33,8 @@
         </div>
       </div>
       <div class="columns is-centered is-gapless">
-        <div class="column">
-          <p class="title">Albums</p>
+        <div class="column" v-if="hasSongs && hasAlbums">
+          <p class="title" v-if="hasAlbums">Albums</p>
           <div class="columns is-mobile is-gapless is-multiline">
             <ItemTile
               v-for="album of artist.albums"
@@ -43,7 +43,7 @@
               item-type="album"
             ></ItemTile>
           </div>
-          <p class="title">Songs</p>
+          <p class="title" v-if="hasSongs">Songs</p>
           <div class="columns is-mobile is-gapless is-multiline">
             <ItemTile
               v-for="songs of artist.songs"
@@ -52,6 +52,9 @@
               item-type="song"
             ></ItemTile>
           </div>
+        </div>
+        <div class="column" v-else>
+          <h6 level-item class="title is-5">No songs or albums found</h6>
         </div>
       </div>
     </div>
@@ -115,6 +118,11 @@ export default class Artist extends Vue {
   async getRadio() {
     const songs = await JellyfinService.getInstantMix(this.$route.params.id);
     PlayerService.setPlaylist(songs);
+
+    this.$buefy.toast.open({
+      message: 'Starting artist radio',
+      type: 'is-success'
+    });
   }
 
   playSongs(shuffle = false, inject = false) {
@@ -124,11 +132,36 @@ export default class Artist extends Vue {
       songs = _.shuffle(songs);
     }
 
+    let message;
+
     if (inject) {
       PlayerService.injectPlaylist(songs);
+      message = 'Injected songs into playlist';
     } else {
       PlayerService.setPlaylist(songs);
+      message = 'Starting playlist';
     }
+
+    this.$buefy.toast.open({
+      message,
+      type: 'is-success'
+    });
+  }
+
+  get hasSongs() {
+    if (this.artist && this.artist.songs && this.artist.songs.length) {
+      return true;
+    }
+
+    return false;
+  }
+
+  get hasAlbums() {
+    if (this.artist && this.artist.albums && this.artist.albums.length) {
+      return true;
+    }
+
+    return false;
   }
 }
 </script>

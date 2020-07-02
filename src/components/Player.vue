@@ -26,10 +26,10 @@
             <div level-item style="width: 30px"></div>
             <div level-item class="middle" style="width: 100%; text-align: center">
               <h6 class="title is-5 song-title">{{ player.playlist[player.index].Name }}</h6>
-              <h6 class="subtitle is-6 song-title">{{ player.playlist[player.index].AlbumArtist }}</h6>
+              <h6 class="subtitle is-6 song-title">{{ player.playlist[player.index].artist }}</h6>
             </div>
-            <div level-item class="ends" style="text-align: right; width: 30px;">
-              <b-icon level-item icon="heart-outline"></b-icon>
+            <div level-item class="ends" style="text-align: right; width: 30px;" @click="likeSong">
+              <b-icon level-item :icon="`${player.playlist[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.playlist[player.index].loved ? 'is-danger' : ''}`"></b-icon>
             </div>
           </div>
           <div class="level-bottom level is-mobile" style="margin-bottom: 0">
@@ -83,10 +83,12 @@
         </div>
         <div level-item class="middle" @click="miniPlayer = false">
           <h6 class="title is-6 song-title">{{ player.playlist[player.index].Name }}</h6>
-          <h6 class="subtitle is-6 song-title">{{ player.playlist[player.index].AlbumArtist }}</h6>
+          <h6 class="subtitle is-6 song-title">{{ player.playlist[player.index].artist }}</h6>
         </div>
         <div level-right class="ends">
-          <b-icon level-item icon="heart-outline"></b-icon>
+          <span @click="likeSong">
+            <b-icon level-item :icon="`${player.playlist[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.playlist[player.index].loved ? 'is-danger' : ''}`"></b-icon>
+          </span>
           <span @click="playPause">
             <b-icon level-item :icon="`${player.playing ? 'pause' : 'play'}`"></b-icon>
           </span>
@@ -140,6 +142,10 @@ export default class Player extends Vue {
 
   seekHere(val) {
     PlayerService.seek(val);
+  }
+
+  likeSong() {
+    PlayerService.likeItem();
   }
 }
 </script>

@@ -4,8 +4,8 @@ export const SearchService = {
     artists: [],
     albums: [],
     songs: [],
-    genres: [],
   },
+  searchTerm: '',
   lastRoute: 'Search',
   lastId: null,
 };

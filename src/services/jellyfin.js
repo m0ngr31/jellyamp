@@ -60,14 +60,23 @@ const JellyfinService = {
     const users = await Requests.get('users/public', null, true, false);
     console.log(users);
   },
+  search: async searchTerm => {
+    const userId = JellyfinService.getUser().Id;
+
+    const artists = await Requests.get('Artists', {searchTerm}, true, true);
+    const songs = await Requests.get(`Users/${userId}/Items`, {searchTerm, IncludeItemTypes: 'Audio', Recursive: true}, true, true);
+    const albums = await Requests.get(`Users/${userId}/Items`, {searchTerm, IncludeItemTypes: 'MusicAlbum', Recursive: true}, true, true);
+
+    return [artists.Items, songs.Items, albums.Items];
+  },
   getArtists: async () => {
     const userId = JellyfinService.getUser().Id;
     const artists = await Requests.get('Artists', {userId}, true, true);
     return artists.Items;
   },
-  getItem: async artistId => {
+  getItem: async itemId => {
     const userId = JellyfinService.getUser().Id;
-    return Requests.get(`Users/${userId}/Items/${artistId}`, null, true, true);
+    return Requests.get(`Users/${userId}/Items/${itemId}`, null, true, true);
   },
   getArtistAlbums: async artistId => {
     const params = {
@@ -95,6 +104,14 @@ const JellyfinService = {
     const userId = JellyfinService.getUser().Id;
     const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
     return res.Items;
+  },
+  likeId: async itemId => {
+    const userId = JellyfinService.getUser().Id;
+    return await Requests.post(`Users/${userId}/FavoriteItems/${itemId}`);
+  },
+  unlikeId: async itemId => {
+    const userId = JellyfinService.getUser().Id;
+    return await Requests.delete(`Users/${userId}/FavoriteItems/${itemId}`);
   },
   getItemImageUrl: item => {
     const keys = Object.keys(item.ImageTags);
@@ -125,7 +142,28 @@ const JellyfinService = {
     const songs = await Requests.get(`Items/${itemId}/InstantMix`, params, true, true);
     return songs.Items;
   },
-  getItemPlayUrl: (itemId) => {
+  updatePlaying: async params => {
+    try {
+      await Requests.post('Sessions/Playing', params, true, true);
+    } catch (e) {
+      // Do nothing
+    }
+  },
+  updateProgress: async params => {
+    try {
+      await Requests.post('Sessions/Playing/Progress', params, true, true);
+    } catch (e) {
+      // Do nothing
+    }
+  },
+  stopPlaying: async params => {
+    try {
+      await Requests.post('Sessions/Playing/Stopped', params, true, true);
+    } catch (e) {
+      // Do nothing
+    }
+  },
+  getItemPlayUrl: itemId => {
     const params = {
       UserId: JellyfinService.getUser().Id,
       DeviceId: getItemOrDefault('deviceId', null),
@@ -141,7 +179,7 @@ const JellyfinService = {
     const urlParams = new URLSearchParams(Object.entries(params))
 
     const serverUri = JellyfinService.getServer().uri;
-    return `${serverUri}Audio/${itemId}/universal?${urlParams}`;
+    return [`${serverUri}Audio/${itemId}/universal?${urlParams}`, params];
   },
 };
 

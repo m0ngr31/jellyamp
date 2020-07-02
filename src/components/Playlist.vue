@@ -14,17 +14,16 @@
         class="playlist-item"
         v-for="(song, index) of player.playlist"
         v-bind:key="`${song.Id}${index}`"
-        @click="playSong(index)"
       >
         <div class="level is-mobile">
-          <div level-left class="ends">
-            <img level-item :src="song.thumbnailImage" class="album-art">
+          <div level-left class="ends" @click="playSong(index)">
+            <img level-item :src="song.thumbnailImage" loading="lazy" class="album-art">
           </div>
-          <div level-item class="middle">
+          <div level-item class="middle" @click="playSong(index)">
             <h6 class="title is-6 song-title">{{ song.Name }}</h6>
-            <h6 class="subtitle is-6 song-title">{{ song.AlbumArtist }}</h6>
+            <h6 class="subtitle is-6 song-title">{{ song.artist }}</h6>
           </div>
-          <div level-right class="ends" @click="removeItem(index)">
+          <div level-right class="ends" @click="removeItem(index)" style="text-align: right">
             <b-icon v-if="index !== player.index" level-item icon="close-circle-outline"></b-icon>
           </div>
         </div>

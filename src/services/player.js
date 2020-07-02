@@ -5,7 +5,6 @@ import _ from 'lodash';
 import JellyfinService from './jellyfin';
 
 import placeholderImg from '../assets/logo.png';
-import { isPlaybackStatusValid } from 'mpris-service/dist/constants';
 
 Vue.filter('duration', value => {
   if (!value) {
@@ -27,6 +26,25 @@ class Player {
   playing = true;
 
   lastPrev = -1;
+
+  updateProgress = _.throttle(ticks => {
+    const data = {
+      IsPaused: false,
+      PositionTicks: ticks, // Convert to ticks/ns
+      PlayMethod: 'Transcode',
+      PlaySessionId: this.playlist[this.index].params.PlaySessionId,
+      ItemId: this.playlist[this.index].Id,
+      EventName: 'timeupdate',
+    };
+
+    JellyfinService.updateProgress(data);
+  }, 10000);
+
+  updateProgressMpris = _.throttle(ticks => {
+    if (window.ipcRenderer) {
+      window.ipcRenderer.send('updateTime', Math.floor(ticks / 1000)); // nanoseconds to microseconds
+    }
+  }, 1000);
 
   // Make it a singleton
   constructor() {
@@ -55,6 +73,9 @@ class Player {
       const songUrl = JellyfinService.getItemImageUrl(item);
       item.thumbnailImage = songUrl ? songUrl : placeholderImg;
 
+      item.artist = item.Artists[0] || item.AlbumArtist;
+      item.loved = item.UserData.IsFavorite || false;
+
       // Preload the first 3 items in the playlist
       if (index < 3) {
         item.howl = this.createHowl(item);
@@ -71,6 +92,9 @@ class Player {
       const songUrl = JellyfinService.getItemImageUrl(item);
       item.thumbnailImage = songUrl ? songUrl : placeholderImg;
 
+      item.artist = item.Artists[0] || item.AlbumArtist;
+      item.loved = item.UserData.IsFavorite || false;
+
       return item;
     });
 
@@ -83,11 +107,36 @@ class Player {
 
   removeItem(index) {
     this.playlist.splice(index, 1);
+
+    if (index < this.index) {
+      this.index -= 1;
+    }
+  }
+
+  async likeItem() {
+    if (!this.player) {
+      return;
+    }
+
+    try {
+      if (this.playlist[this.index].loved) {
+        await JellyfinService.unlikeId(this.playlist[this.index].Id);
+        this.playlist[this.index].loved = false;
+      } else {
+        await JellyfinService.likeId(this.playlist[this.index].Id);
+        this.playlist[this.index].loved = true;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   createHowl(item) {
+    const [url, params] = JellyfinService.getItemPlayUrl(item.Id);
+    item.params = params;
+
     const howl = new Howl({
-      src: [JellyfinService.getItemPlayUrl(item.Id)],
+      src: [url],
       html5: true,
       format: ['aac'],
       onplay: () => {
@@ -104,6 +153,14 @@ class Player {
           });
         }
 
+        JellyfinService.updatePlaying({
+          IsPaused: false,
+          PositionTicks: 0,
+          PlayMethod: 'Transcode',
+          PlaySessionId: item.params.PlaySessionId,
+          ItemId: item.Id,
+        });
+
         requestAnimationFrame(() => this.step());
 
         if (window.ipcRenderer) {
@@ -112,6 +169,7 @@ class Player {
             artist: item.Artists,
             album: item.Album,
             img: item.thumbnailImage,
+            duration: Math.floor(item.RunTimeTicks / 1000), // nanoseconds to microseconds
           };
 
           window.ipcRenderer.send('play', data);
@@ -119,6 +177,14 @@ class Player {
       },
       onend: () => {
         this.skip('next');
+
+        JellyfinService.stopPlaying({
+          IsPaused: false,
+          PlayMethod: 'Transcode',
+          PositionTicks: item.progressInTicks,
+          PlaySessionId: item.params.PlaySessionId,
+          ItemId: item.Id,
+        });
       },
       onpause: () => {
         this.playing = false;
@@ -133,6 +199,14 @@ class Player {
         if (window.ipcRenderer) {
           window.ipcRenderer.send('stop');
         }
+
+        JellyfinService.stopPlaying({
+          IsPaused: false,
+          PlayMethod: 'Transcode',
+          PositionTicks: item.progressInTicks,
+          PlaySessionId: item.params.PlaySessionId,
+          ItemId: item.Id,
+        });
       },
       onloaderror: err => {
         console.log(err);
@@ -228,9 +302,11 @@ class Player {
       // requestAnimationFrame(() => this.step()); // This binds up the CPU
       setTimeout(() => this.step(), 250);
 
-      // if (window.ipcRenderer) {
-      //   _.defer(() => window.ipcRenderer.send('updateTime', Math.floor(seek * 10000)));
-      // }
+      const ticks = Math.round(seek * 10000000);
+
+      this.playlist[this.index].progressInTicks = ticks;
+      this.updateProgress(ticks);
+      this.updateProgressMpris(ticks);
     }
   }
 
