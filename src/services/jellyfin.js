@@ -136,7 +136,7 @@ const JellyfinService = {
 
     const params = {
       UserId,
-      Limit: 200,
+      Limit: 50,
     };
 
     const songs = await Requests.get(`Items/${itemId}/InstantMix`, params, true, true);
