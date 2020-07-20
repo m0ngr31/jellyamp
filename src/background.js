@@ -30,7 +30,6 @@ function createWindow() {
     maximizable: false,
     frame: false,
     backgroundColor: '#000B25',
-    titleBarStyle: 'hidden',
     icon: path.join(__static, 'icon.png'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -75,7 +74,9 @@ app.on('activate', () => {
 });
 
 // Disable Chrome's lame MPRIS implementation
-app.commandLine.appendSwitch('disable-features', 'MediaSessionService');
+if (isLinux) {
+  app.commandLine.appendSwitch('disable-features', 'MediaSessionService');
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -88,12 +89,7 @@ app.on('ready', async () => {
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
-  } else {
-    // Prevent DevTools from being opened in production
-    globalShortcut.register('Control+Shift+I', () => {
-      return false
-    });
-  }
+  } else {}
 
   createWindow();
 });
@@ -124,7 +120,7 @@ const setupPlayer = ev => {
   }
 };
 
-if (process.platform === 'linux') {
+if (isLinux) {
   ipcMain.on('play', (ev, data) => {
     if (!player) {
       setupPlayer(ev);

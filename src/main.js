@@ -9,8 +9,6 @@ import JellyfinService from './services/jellyfin';
 
 Vue.config.productionTip = false;
 
-console.log(JellyfinService);
-
 Vue.use(Buefy);
 Vue.use(VueTitlebar);
 

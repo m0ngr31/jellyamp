@@ -174,6 +174,19 @@ class Player {
 
           window.ipcRenderer.send('play', data);
         }
+
+        if ('mediaSession' in navigator) {
+          setTimeout(() => {
+            navigator.mediaSession.playbackState = 'playing';
+          });
+
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: item.Name,
+            artist: item.Artists,
+            album: item.Album,
+            artwork: [{ src: item.thumbnailImage }],
+          });
+        }
       },
       onend: () => {
         this.skip('next');
@@ -191,6 +204,12 @@ class Player {
 
         if (window.ipcRenderer) {
           window.ipcRenderer.send('pause');
+        }
+
+        if ('mediaSession' in navigator) {
+          setTimeout(() => {
+            navigator.mediaSession.playbackState = 'paused';
+          });
         }
       },
       onstop: () => {
@@ -376,4 +395,25 @@ if (window.ipcRenderer) {
   });
 }
 
-console.log(PlayerService);
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.playbackState = 'none';
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    PlayerService.playPause();
+  });
+
+  navigator.mediaSession.setActionHandler('pause', () => {
+    PlayerService.playPause();
+  });
+
+  navigator.mediaSession.setActionHandler('previoustrack', () => {
+    PlayerService.handleBack();
+  });
+
+  navigator.mediaSession.setActionHandler('nexttrack', () => {
+    PlayerService.skip('next');
+  });
+}
+
+
+window.PlayerService = PlayerService;

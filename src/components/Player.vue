@@ -6,10 +6,10 @@
       <div class="container">
         <div class="level-bottom level is-mobile" style="padding: 15px 15px 0px 15px;">
           <div level-left @click="togglePlayer()">
-            <b-icon level-item size="is-medium" icon="chevron-down"></b-icon>
+            <b-icon level-item size="is-medium" icon="chevron-down" class="pointer"></b-icon>
           </div>
           <div level-right @click="player.showPlaylist = true">
-            <b-icon level-item size="is-medium" icon="playlist-music"></b-icon>
+            <b-icon level-item size="is-medium" icon="playlist-music" class="pointer"></b-icon>
           </div>
         </div>
         <div class="container" style="padding: 0px 20px">
@@ -29,7 +29,7 @@
               <h6 class="subtitle is-6 song-title">{{ player.playlist[player.index].artist }}</h6>
             </div>
             <div level-item class="ends" style="text-align: right; width: 30px;" @click="likeSong">
-              <b-icon level-item :icon="`${player.playlist[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.playlist[player.index].loved ? 'is-danger' : ''}`"></b-icon>
+              <b-icon level-item :icon="`${player.playlist[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.playlist[player.index].loved ? 'is-danger' : ''}`" class="pointer"></b-icon>
             </div>
           </div>
           <div class="level-bottom level is-mobile" style="margin-bottom: 0">
@@ -57,17 +57,18 @@
             <div level-left></div>
             <div level-item id="big-icons">
               <span @click="prev">
-                <b-icon level-item size="is-large" icon="skip-previous"></b-icon>
+                <b-icon level-item size="is-large" icon="skip-previous" class="pointer"></b-icon>
               </span>
               <span @click="playPause">
                 <b-icon
                   level-item size="is-large"
                   :icon="`${player.playing ? 'pause-circle' : 'play-circle'}`"
                   style="margin-left: 25px; margin-right: 25px;"
+                  class="pointer"
                 ></b-icon>
               </span>
               <span @click="skip">
-                <b-icon level-item size="is-large" icon="skip-next"></b-icon>
+                <b-icon level-item size="is-large" icon="skip-next" class="pointer"></b-icon>
               </span>
             </div>
             <div level-right></div>
@@ -77,7 +78,7 @@
     </div>
     <div class="mini-player" v-show="miniPlayer">
       <progress class="progress playing-progress is-success" :value="currentProgress" max="100" style="z-index: 30"></progress>
-      <div class="level is-mobile" style="max-height: 58px;">
+      <div class="level is-mobile pointer" style="max-height: 58px;">
         <div level-left class="ends" @click="miniPlayer = false">
           <img level-item src="../assets/logo.png" class="album-art update-img">
         </div>

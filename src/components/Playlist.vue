@@ -6,18 +6,18 @@
     <div class="container">
       <div class="level is-mobile">
         <div class="level-left" @click="player.showPlaylist = false">
-          <b-icon level-item size="is-medium" icon="chevron-left"></b-icon>
+          <b-icon level-item size="is-medium" icon="chevron-left" class="pointer"></b-icon>
           <p level-item class="title">Playlist</p>
         </div>
       </div>
       <div
-        class="playlist-item"
+        class="playlist-item pointer"
         v-for="(song, index) of player.playlist"
         v-bind:key="`${song.Id}${index}`"
       >
         <div class="level is-mobile">
           <div level-left class="ends" @click="playSong(index)">
-            <img level-item :src="song.thumbnailImage" loading="lazy" class="album-art">
+            <img level-item :src="song.thumbnailImage" loading="lazy" height="58" width="58" class="album-art">
           </div>
           <div level-item class="middle" @click="playSong(index)">
             <h6 class="title is-6 song-title">{{ song.Name }}</h6>

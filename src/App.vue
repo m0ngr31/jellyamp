@@ -125,4 +125,8 @@ button, input, .player, .no-grab, .container, .mini-player {
     top: 0px;
   }
 }
+
+.pointer {
+  cursor: pointer;
+}
 </style>

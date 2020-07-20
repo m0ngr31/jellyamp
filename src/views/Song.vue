@@ -6,23 +6,23 @@
       <div class="level is-mobile">
         <div level-left @click="goBack()">
           <b-tooltip label="Back" position="is-right">
-            <b-icon level-item size="is-medium" icon="arrow-left"></b-icon>
+            <b-icon level-item size="is-medium" icon="arrow-left" class="pointer"></b-icon>
           </b-tooltip>
         </div>
         <div level-right>
           <b-tooltip label="Play Song Radio" position="is-left">
             <div @click="getRadio">
-              <b-icon level-item size="is-medium" icon="radio"></b-icon>
+              <b-icon level-item size="is-medium" icon="radio" class="pointer"></b-icon>
             </div>
           </b-tooltip>
           <b-tooltip label="Play Song" position="is-left">
             <div @click="playSongs()">
-              <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;"></b-icon>
+              <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;" class="pointer"></b-icon>
             </div>
           </b-tooltip>
           <b-tooltip label="Inject Song into current playlist" position="is-left">
             <div @click="playSongs(true)">
-              <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus"></b-icon>
+              <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
           </b-tooltip>
         </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="column is-half-mobile is-1-tablet item-title" @click="gotoItem">
-    <img src="../assets/logo.png" loading="lazy" class="logo">
+  <div class="column is-half-mobile is-1-tablet item-title pointer" @click="gotoItem">
+    <img src="../assets/logo.png" loading="lazy" class="logo" width="185" height="185">
     <p class="subtitle is-6 item-name" v-if="!disableClick">{{ item.Name }}</p>
   </div>
 </template>
