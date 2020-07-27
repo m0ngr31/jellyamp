@@ -117,6 +117,10 @@ button, input, .player, .no-grab, .container, .mini-player {
   -webkit-app-region: no-drag;
 }
 
+.max-width {
+  width: 100%;
+}
+
 @keyframes slide-up {
   0% {
     top: 100vh;

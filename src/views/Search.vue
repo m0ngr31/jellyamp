@@ -1,6 +1,6 @@
 <template>
   <div class="columns is-mobile is-centered is-gapless">
-    <div class="column">
+    <div class="column max-width">
       <section class="top">
         <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
         <div v-if="!isLoading">
