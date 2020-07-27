@@ -1,6 +1,6 @@
 {
   "name": "jellyamp",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "private": true,
   "description": "Desktop client for listening to music from a Jellyfin server",
   "license": "MIT",
