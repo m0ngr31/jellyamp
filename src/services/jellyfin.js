@@ -71,7 +71,7 @@ const JellyfinService = {
   },
   getArtists: async () => {
     const userId = JellyfinService.getUser().Id;
-    const artists = await Requests.get('Artists', {userId}, true, true);
+    const artists = await Requests.get('Artists/AlbumArtists', {userId}, true, true);
     return artists.Items;
   },
   getItem: async itemId => {
