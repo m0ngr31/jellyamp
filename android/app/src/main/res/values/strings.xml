@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">jellyamp</string>
+    <string name="title_activity_main">jellyamp</string>
+    <string name="package_name">com.m0ngr31.jellyamp</string>
+    <string name="custom_url_scheme">com.m0ngr31.jellyamp</string>
+</resources>

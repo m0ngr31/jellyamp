@@ -1,0 +1,13 @@
+{
+  "appId": "com.m0ngr31.jellyamp",
+  "appName": "jellyamp",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

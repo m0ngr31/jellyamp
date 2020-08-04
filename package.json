@@ -36,6 +36,9 @@
     "vue-router": "^3.2.0"
   },
   "devDependencies": {
+    "@capacitor/android": "^2.4.0",
+    "@capacitor/cli": "^2.4.0",
+    "@capacitor/core": "^2.4.0",
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-plugin-router": "~4.4.0",
