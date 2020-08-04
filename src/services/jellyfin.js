@@ -1,6 +1,7 @@
 import {v4 as uuidv4 } from 'uuid';
 
-import {getItemOrDefault, setItem} from './localstorage';
+import router from '../router/index';
+import {getItemOrDefault, setItem, removeItem} from './localstorage';
 import {Requests} from './requests';
 
 const cleanUrl = url => {
@@ -55,6 +56,13 @@ const JellyfinService = {
       console.log(e);
       throw new Error('Could not login');
     }
+  },
+  logout: () => {
+    removeItem('api-token');
+    removeItem('server');
+    removeItem('user');
+
+    router.push({name: 'Login'});
   },
   getUsers: async () => {
     const users = await Requests.get('users/public', null, true, false);

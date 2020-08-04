@@ -18,11 +18,11 @@ Vue.filter('duration', value => {
 });
 
 class Player {
-  playlist = [];
+  queue = [];
   index = null;
   player = null;
   viewModel = null;
-  showPlaylist = false;
+  showQueue = false;
   playing = true;
 
   lastPrev = -1;
@@ -32,8 +32,8 @@ class Player {
       IsPaused: false,
       PositionTicks: ticks, // Convert to ticks/ns
       PlayMethod: 'Transcode',
-      PlaySessionId: this.playlist[this.index].params.PlaySessionId,
-      ItemId: this.playlist[this.index].Id,
+      PlaySessionId: this.queue[this.index].params.PlaySessionId,
+      ItemId: this.queue[this.index].Id,
       EventName: 'timeupdate',
     };
 
@@ -58,10 +58,10 @@ class Player {
   clearHowl() {
     this.player.unload();
     this.player = null;
-    this.playlist[this.index].howl = null;
+    this.queue[this.index].howl = null;
   }
 
-  setPlaylist(playlist) {
+  setQueue(queue) {
     if (this.player) {
       this.player.stop();
       this.player = null;
@@ -69,14 +69,14 @@ class Player {
 
     Howler.stop();
 
-    this.playlist = _.map(playlist, (item, index) => {
+    this.queue = _.map(queue, (item, index) => {
       const songUrl = JellyfinService.getItemImageUrl(item);
       item.thumbnailImage = songUrl ? songUrl : placeholderImg;
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
 
-      // Preload the first 3 items in the playlist
+      // Preload the first 3 items in the queue
       if (index < 3) {
         item.howl = this.createHowl(item);
       }
@@ -87,8 +87,8 @@ class Player {
     this.play(0);
   }
 
-  injectPlaylist(playlist) {
-    const updatePlaylist = _.map(playlist, item => {
+  injectQueue(queue) {
+    const updateQueue = _.map(queue, item => {
       const songUrl = JellyfinService.getItemImageUrl(item);
       item.thumbnailImage = songUrl ? songUrl : placeholderImg;
 
@@ -98,15 +98,15 @@ class Player {
       return item;
     });
 
-    if (this.index === this.playlist.length - 1) {
-      this.playlist = [...this.playlist, ...updatePlaylist];
+    if (this.index === this.queue.length - 1) {
+      this.queue = [...this.queue, ...updateQueue];
     } else {
-      this.playlist.splice(this.index + 1, 0, ...playlist);
+      this.queue.splice(this.index + 1, 0, ...queue);
     }
   }
 
   removeItem(index) {
-    this.playlist.splice(index, 1);
+    this.queue.splice(index, 1);
 
     if (index < this.index) {
       this.index -= 1;
@@ -119,12 +119,12 @@ class Player {
     }
 
     try {
-      if (this.playlist[this.index].loved) {
-        await JellyfinService.unlikeId(this.playlist[this.index].Id);
-        this.playlist[this.index].loved = false;
+      if (this.queue[this.index].loved) {
+        await JellyfinService.unlikeId(this.queue[this.index].Id);
+        this.queue[this.index].loved = false;
       } else {
-        await JellyfinService.likeId(this.playlist[this.index].Id);
-        this.playlist[this.index].loved = true;
+        await JellyfinService.likeId(this.queue[this.index].Id);
+        this.queue[this.index].loved = true;
       }
     } catch (e) {
       console.log(e);
@@ -145,9 +145,9 @@ class Player {
         if (this.viewModel && this.viewModel.$el) {
           const images = this.viewModel.$el.querySelectorAll('.update-img');
           images.forEach((image, index) => {
-            image.setAttribute('src', this.playlist[this.index].thumbnailImage);
+            image.setAttribute('src', this.queue[this.index].thumbnailImage);
 
-            if (this.playlist[this.index].thumbnailImage === placeholderImg && index === 0) {
+            if (this.queue[this.index].thumbnailImage === placeholderImg && index === 0) {
               image.removeAttribute('src');
             }
           });
@@ -255,7 +255,7 @@ class Player {
   }
 
   play(index) {
-    if (!this.playlist.length || index < 0 || index >= this.playlist.length) {
+    if (!this.queue.length || index < 0 || index >= this.queue.length) {
       return;
     }
 
@@ -264,7 +264,7 @@ class Player {
     }
 
     this.index = index;
-    const data = this.playlist[index];
+    const data = this.queue[index];
 
     if (!data.howl) {
       data.howl = this.createHowl(data);
@@ -323,7 +323,7 @@ class Player {
 
       const ticks = Math.round(seek * 10000000);
 
-      this.playlist[this.index].progressInTicks = ticks;
+      this.queue[this.index].progressInTicks = ticks;
       this.updateProgress(ticks);
       this.updateProgressMpris(ticks);
     }
@@ -349,7 +349,7 @@ class Player {
 
     if (dir === 'next') {
       index = index + 1;
-      if (index >= this.playlist.length) {
+      if (index >= this.queue.length) {
         this.clearHowl();
       }
     } else {

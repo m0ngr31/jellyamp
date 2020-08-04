@@ -7,7 +7,7 @@
 </p>
 
 ## About
-A stylish, cross-platform desktop client for listening to music from a Jellyfin server. Inspired by Plexamp. 
+A stylish, cross-platform desktop client for listening to music from a Jellyfin server. Inspired by Plexamp.
 
 ## In Action
 
@@ -36,7 +36,7 @@ A stylish, cross-platform desktop client for listening to music from a Jellyfin 
   <img src="https://i.imgur.com/HmVRw8r.png" width="400">
 </p>
 
-### Playlist Page
+### Queue Page
 <p>
   <img src="https://i.imgur.com/6dTb11U.png" width="400">
 </p>

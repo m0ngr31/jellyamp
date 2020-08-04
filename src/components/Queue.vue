@@ -1,18 +1,18 @@
 <template>
   <div
-    class="playlist overflowY"
+    class="queue overflowY"
     :style="`height: calc(100vh ${isElectron ? '- 26px' : ''}); top: ${isElectron ? 26 : 0}px`"
   >
     <div class="container">
       <div class="level is-mobile">
-        <div class="level-left" @click="player.showPlaylist = false">
+        <div class="level-left" @click="player.showQueue = false">
           <b-icon level-item size="is-medium" icon="chevron-left" class="pointer"></b-icon>
-          <p level-item class="title">Playlist</p>
+          <p level-item class="title">Queue</p>
         </div>
       </div>
       <div
-        class="playlist-item pointer"
-        v-for="(song, index) of player.playlist"
+        class="queue-item pointer"
+        v-for="(song, index) of player.queue"
         v-bind:key="`${song.Id}${index}`"
       >
         <div class="level is-mobile">
@@ -40,9 +40,9 @@ import JellyfinService from '../services/jellyfin';
 import PlayerService from '../services/player';
 
 @Component({
-  name: 'Playlist',
+  name: 'Queue',
 })
-export default class Playlist extends Vue {
+export default class Queue extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   player = PlayerService;
 
@@ -57,7 +57,7 @@ export default class Playlist extends Vue {
 </script>
 
 <style scoped>
-.playlist {
+.queue {
   padding: 15px;
   background-color: #000B25;
   z-index: 150;
@@ -65,7 +65,7 @@ export default class Playlist extends Vue {
   width: 100%;
 }
 
-.playlist-item {
+.queue-item {
   height: 60px;
   width: 100%;
 }

@@ -20,7 +20,7 @@
               <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;" class="pointer"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Inject Song into current playlist" position="is-left">
+          <b-tooltip label="Inject Song into current queue" position="is-left">
             <div @click="playSongs(true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
@@ -84,7 +84,7 @@ export default class Song extends Vue {
 
   async getRadio() {
     const songs = await JellyfinService.getInstantMix(this.$route.params.id);
-    PlayerService.setPlaylist(songs);
+    PlayerService.setQueue(songs);
 
     this.$buefy.toast.open({
       message: 'Starting song radio',
@@ -98,10 +98,10 @@ export default class Song extends Vue {
     let message;
 
     if (inject) {
-      PlayerService.injectPlaylist(songs);
-      message = 'Injected song into playlist';
+      PlayerService.injectQueue(songs);
+      message = 'Injected song into queue';
     } else {
-      PlayerService.setPlaylist(songs);
+      PlayerService.setQueue(songs);
       message = 'Playing song';
     }
 

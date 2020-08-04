@@ -19,3 +19,11 @@ export function setItem(key, data) {
 
   localStorage.setItem(key, JSON.stringify(data));
 }
+
+export function removeItem(key) {
+  if (!typeof (Storage)) {
+    return;
+  }
+
+  localStorage.removeItem(key);
+}
