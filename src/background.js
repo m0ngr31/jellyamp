@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import {
   createProtocol,
   installVueDevtools,
@@ -8,6 +8,7 @@ import path from 'path';
 let player;
 let Player;
 let playerHandler;
+let currentPlaytime = 0;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isLinux = process.platform === 'linux';
@@ -109,14 +110,18 @@ const setupPlayer = ev => {
 
     playerHandler = ev;
 
-    player.on('next', () => playerHandler.reply('skip'));
-    player.on('previous', () => playerHandler.reply('prev'));
-    player.on('pause', () => playerHandler.reply('playPause'));
-    player.on('playpause', () => playerHandler.reply('playPause'));
-    player.on('play', () => playerHandler.reply('playPause'));
-    player.on('stop', () => playerHandler.reply('stop'));
+    player.on('next', () => { currentPlaytime = 0; playerHandler.reply('skip'); });
+    player.on('previous', () => { currentPlaytime = 0; playerHandler.reply('prev'); });
+    player.on('pause', () => { currentPlaytime = 0; playerHandler.reply('playPause'); });
+    player.on('playpause', () => { currentPlaytime = 0; playerHandler.reply('playPause'); });
+    player.on('play', () => { currentPlaytime = 0; playerHandler.reply('playPause'); });
+    player.on('stop', () => { currentPlaytime = 0; playerHandler.reply('stop'); });
     player.on('quit', () => app.quit());
     player.on('raise', () => win.restore());
+
+    player.getPosition = () => {
+      return currentPlaytime;
+    }
   }
 };
 
@@ -128,7 +133,7 @@ if (isLinux) {
 
     player.metadata = {
       'mpris:trackid': player.objectPath('track/0'),
-      'mpris:length': 0,
+      'mpris:length': data.duration,
       'mpris:artUrl': data.img,
       'xesam:title': data.name,
       'xesam:album': data.album,
@@ -138,7 +143,7 @@ if (isLinux) {
     player.playbackStatus = Player.PLAYBACK_STATUS_PLAYING;
   });
 
-  ipcMain.on('pause', () => {
+  ipcMain.on('pause', ev => {
     if (!player) {
       setupPlayer(ev);
     }
@@ -146,12 +151,16 @@ if (isLinux) {
     player.playbackStatus = Player.PLAYBACK_STATUS_PAUSED;
   });
 
-  ipcMain.on('stop', () => {
+  ipcMain.on('stop', ev => {
     if (!player) {
       setupPlayer(ev);
     }
 
     player.playbackStatus = Player.PLAYBACK_STATUS_STOPPED;
+  });
+
+  ipcMain.on('updateTime', (_ev, data) => {
+    currentPlaytime = data;
   });
 }
 

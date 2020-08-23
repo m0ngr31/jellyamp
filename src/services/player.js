@@ -6,6 +6,10 @@ import JellyfinService from './jellyfin';
 
 import placeholderImg from '../assets/logo.png';
 
+const ticksInSecond = 10000000;
+const microSecondsinSecond = 1000000;
+const ticksInMs = 10;
+
 Vue.filter('duration', value => {
   if (!value) {
     value = 0;
@@ -30,7 +34,7 @@ class Player {
   updateProgress = _.throttle(ticks => {
     const data = {
       IsPaused: false,
-      PositionTicks: ticks, // Convert to ticks/ns
+      PositionTicks: ticks,
       PlayMethod: 'Transcode',
       PlaySessionId: this.queue[this.index].params.PlaySessionId,
       ItemId: this.queue[this.index].Id,
@@ -40,11 +44,22 @@ class Player {
     JellyfinService.updateProgress(data);
   }, 10000);
 
-  updateProgressMpris = _.throttle(ticks => {
+  updateProgressMpris = _.throttle(seconds => {
     if (window.ipcRenderer) {
-      window.ipcRenderer.send('updateTime', Math.floor(ticks / 1000)); // nanoseconds to microseconds
+      window.ipcRenderer.send('updateTime', seconds * microSecondsinSecond); // seconds to microseconds
     }
-  }, 1000);
+
+    if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+      // Sometimes there is a race condition on skip where the position is greater than the duration
+      try {
+        navigator.mediaSession.setPositionState({
+          duration: this.player.duration(),
+          playbackRate: 1,
+          position: seconds,
+        });
+      } catch {}
+    }
+  }, 1000, {leading: false, trailing: true});
 
   // Make it a singleton
   constructor() {
@@ -169,23 +184,27 @@ class Player {
             artist: item.Artists,
             album: item.Album,
             img: item.thumbnailImage,
-            duration: Math.floor(item.RunTimeTicks / 1000), // nanoseconds to microseconds
+            duration: Math.floor(item.RunTimeTicks / ticksInMs), // nanoseconds to microseconds
           };
 
           window.ipcRenderer.send('play', data);
         }
 
         if ('mediaSession' in navigator) {
-          setTimeout(() => {
-            navigator.mediaSession.playbackState = 'playing';
-          });
-
           navigator.mediaSession.metadata = new MediaMetadata({
             title: item.Name,
             artist: item.Artists,
             album: item.Album,
             artwork: [{ src: item.thumbnailImage }],
           });
+
+          navigator.mediaSession.playbackState = 'playing';
+
+          if ('setPositionState' in navigator.mediaSession) {
+            navigator.mediaSession.setPositionState({
+              duration: Math.floor(item.RunTimeTicks / ticksInSecond),
+            });
+          }
         }
       },
       onend: () => {
@@ -217,6 +236,10 @@ class Player {
 
         if (window.ipcRenderer) {
           window.ipcRenderer.send('stop');
+        }
+
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'none';
         }
 
         JellyfinService.stopPlaying({
@@ -321,11 +344,11 @@ class Player {
       // requestAnimationFrame(() => this.step()); // This binds up the CPU
       setTimeout(() => this.step(), 250);
 
-      const ticks = Math.round(seek * 10000000);
+      const ticks = Math.round(seek * ticksInSecond);
 
       this.queue[this.index].progressInTicks = ticks;
       this.updateProgress(ticks);
-      this.updateProgressMpris(ticks);
+      this.updateProgressMpris(seek);
     }
   }
 
@@ -398,21 +421,22 @@ if (window.ipcRenderer) {
 if ('mediaSession' in navigator) {
   navigator.mediaSession.playbackState = 'none';
 
-  navigator.mediaSession.setActionHandler('play', () => {
-    PlayerService.playPause();
-  });
+  const actionHandlers = [
+    ['play', () => PlayerService.playPause()],
+    ['pause', () => PlayerService.playPause()],
+    ['previoustrack', () => PlayerService.handleBack()],
+    ['nexttrack', () => PlayerService.skip('next')],
+    ['stop', () => PlayerService.stop()],
+    // ['seekto', (details) => { /* ... */ }],
+  ];
 
-  navigator.mediaSession.setActionHandler('pause', () => {
-    PlayerService.playPause();
-  });
-
-  navigator.mediaSession.setActionHandler('previoustrack', () => {
-    PlayerService.handleBack();
-  });
-
-  navigator.mediaSession.setActionHandler('nexttrack', () => {
-    PlayerService.skip('next');
-  });
+  for (const [action, handler] of actionHandlers) {
+    try {
+      navigator.mediaSession.setActionHandler(action, handler);
+    } catch (error) {
+      console.log(`The media session action "${action}" is not supported yet.`);
+    }
+  }
 }
 
 
