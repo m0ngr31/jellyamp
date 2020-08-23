@@ -28,6 +28,7 @@ class Player {
   viewModel = null;
   showQueue = false;
   playing = true;
+  hasStopped = false;
 
   lastPrev = -1;
 
@@ -71,8 +72,11 @@ class Player {
   }
 
   clearHowl() {
-    this.player.unload();
-    this.player = null;
+    this.player.stop();
+    this.hasStopped = true;
+    // this.player = null;
+    this.viewModel.currentProgress = 0;
+    this.viewModel.currentPlayTime = 0;
     this.queue[this.index].howl = null;
   }
 
@@ -303,7 +307,10 @@ class Player {
       return;
     }
 
-    if (this.playing) {
+    if (this.hasStopped) {
+      this.play(0);
+      this.hasStopped = false;
+    } else if (this.playing) {
       this.player.pause();
     } else {
       this.player.play();
@@ -325,6 +332,7 @@ class Player {
 
     if (this.player.playing()) {
       this.player.seek(this.player.duration() * (percentage / 100));
+      setTimeout(() => this.step(), 250);
     }
   }
 
@@ -342,7 +350,7 @@ class Player {
 
     if (this.player.playing()) {
       // requestAnimationFrame(() => this.step()); // This binds up the CPU
-      setTimeout(() => this.step(), 250);
+      setTimeout(() => this.step(), 500);
 
       const ticks = Math.round(seek * ticksInSecond);
 
@@ -378,7 +386,7 @@ class Player {
     } else {
       index = index - 1;
       if (index < 0) {
-        this.clearHowl();
+        index = 0;
       }
     }
 

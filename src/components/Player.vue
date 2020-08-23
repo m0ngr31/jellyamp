@@ -39,8 +39,10 @@
                 size="is-small"
                 type="is-success"
                 :tooltip="false"
-                rounded :value="currentProgress"
-                lazy @change="seekHere"
+                rounded
+                :value="currentProgress"
+                lazy
+                @change="seekHere"
               ></b-slider>
             <div level-left></div>
             </div>
