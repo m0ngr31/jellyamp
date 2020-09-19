@@ -24,6 +24,10 @@ linux:
   target:
     - target: deb
     - target: AppImage
+      arch:
+        - x64
+        - arm64
+
 
 nsis:
   artifactName: ${name}-${version}-install-${arch}.${ext}
