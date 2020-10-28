@@ -139,4 +139,8 @@ button, input, .player, .no-grab, .container, .mini-player {
 .pointer {
   cursor: pointer;
 }
+
+.columns:not(:last-child) {
+  margin-bottom: 0;
+}
 </style>

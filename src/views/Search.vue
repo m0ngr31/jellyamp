@@ -5,10 +5,20 @@
         <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
         <div v-if="!isLoading">
           <div class="columns is-mobile is-centered">
-            <div class="column is-three-quarters-mobile is-two-thirds-tablet">
-              <b-field>
-                <b-input v-model="search" type="search" placeholder="Search..." icon="magnify" @input="doSearch"></b-input>
-              </b-field>
+            <div class="column is-11-mobile is-two-thirds-tablet">
+              <div style="display: inline-flex; width: 100%;">
+                <div style="width: 100vw">
+                  <b-field>
+                    <b-input v-model="search" type="search" placeholder="Search..." icon="magnify" @input="doSearch"></b-input>
+                  </b-field>
+                </div>
+                <div style="width: 15px"/>
+                <div>
+                  <div style="padding-top: 4px;" @click="gotoSettings">
+                    <b-icon level-item size="is-medium" icon="cog-outline" class="pointer"></b-icon>
+                  </div>
+                </div>
+              </div>
               <div class="progress is-small" v-if="!isSearching"></div>
             </div>
           </div>
@@ -116,6 +126,10 @@ export default class Search extends Vue {
     if (SearchService.searchTerm) {
       this.search = SearchService.searchTerm;
     }
+  }
+
+  gotoSettings() {
+    this.$router.push({name: 'Settings'});
   }
 
   async getArtists() {

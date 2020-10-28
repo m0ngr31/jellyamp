@@ -5,6 +5,7 @@ import Meta from 'vue-meta';
 import Login from '../views/Login.vue';
 import Main from '../views/Main.vue';
 import Search from '../views/Search.vue';
+import Settings from '../views/Settings.vue';
 import Album from '../views/Album.vue';
 import Artist from '../views/Artist.vue';
 import Song from '../views/Song.vue';
@@ -32,6 +33,11 @@ const routes = [
         path: '',
         name: 'Search',
         component: Search,
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: Settings,
       },
       {
         path: 'album/:id',

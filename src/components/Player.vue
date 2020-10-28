@@ -50,7 +50,7 @@
               {{ currentPlayTime | duration }}
             </div>
             <div level-left>
-              {{ player.player.duration() | duration }}
+              {{ player.queue[player.index].duration | duration }}
             </div>
           </div>
           <div class="level-bottom level is-mobile" style="margin-top: 4em">

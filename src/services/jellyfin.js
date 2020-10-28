@@ -61,6 +61,7 @@ const JellyfinService = {
     removeItem('api-token');
     removeItem('server');
     removeItem('user');
+    removeItem('bitrate');
 
     router.push({name: 'Login'});
   },
@@ -175,9 +176,7 @@ const JellyfinService = {
     const params = {
       UserId: JellyfinService.getUser().Id,
       DeviceId: getItemOrDefault('deviceId', null),
-      MaxStreamingBitrate: '140000000',
-      TranscodingContainer: 'ts',
-      TranscodingProtocol: 'hls',
+      MaxStreamingBitrate: getItemOrDefault('bitrate', '12444445'),
       AudioCodec: 'aac',
       api_key: JellyfinService.getToken(),
       PlaySessionId: uuidv4(),

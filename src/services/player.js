@@ -53,7 +53,7 @@ class Player {
       // Sometimes there is a race condition on skip where the position is greater than the duration
       try {
         navigator.mediaSession.setPositionState({
-          duration: this.player.duration(),
+          duration: this.queue[this.index].duration,
           playbackRate: 1,
           position: seconds,
         });
@@ -90,6 +90,7 @@ class Player {
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
+      item.duration = Math.floor(item.RunTimeTicks / ticksInSecond);
 
       // Preload the first 3 items in the queue
       if (index < 3) {
@@ -324,7 +325,7 @@ class Player {
     }
 
     if (this.player.playing()) {
-      this.player.seek(this.player.duration() * (percentage / 100));
+      this.player.seek(this.queue[this.index].duration * (percentage / 100));
     }
   }
 
@@ -337,7 +338,7 @@ class Player {
 
     if (this.viewModel && seek) {
       this.viewModel.currentPlayTime = Math.round(seek);
-      this.viewModel.currentProgress = ((seek / this.player.duration()) * 100) || 0;
+      this.viewModel.currentProgress = ((seek / this.queue[this.index].duration) * 100) || 0;
     }
 
     if (this.player.playing()) {
