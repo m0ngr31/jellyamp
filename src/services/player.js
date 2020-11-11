@@ -372,15 +372,15 @@ class Player {
     let index = this.index;
 
     if (dir === 'next') {
+      if (index + 1 >= this.queue.length) {
+        return;
+      }
       index = index + 1;
-      if (index >= this.queue.length) {
-        this.clearHowl();
-      }
     } else {
-      index = index - 1;
-      if (index < 0) {
-        this.clearHowl();
+      if (index - 1 < 0) {
+        return;
       }
+      index = index - 1;
     }
 
     this.skipTo(index);

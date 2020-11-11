@@ -1,5 +1,5 @@
 <template>
-  <div v-if="player.player">
+  <div v-if="player.queue.length > 0">
     <Queue v-if="player.showQueue"></Queue>
     <div class="player" v-show="!miniPlayer" :style="`height: calc(100vh ${isElectron ? '- 26px' : ''});`">
       <img class="bg-album update-img">
