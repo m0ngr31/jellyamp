@@ -14,7 +14,7 @@
                 </div>
                 <div style="width: 15px"/>
                 <div>
-                  <div style="padding-top: 4px;" @click="gotoSettings">
+                  <div style="padding-top: 4px;" @click="gotoSettings" class="no-grab">
                     <b-icon level-item size="is-medium" icon="cog-outline" class="pointer"></b-icon>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="columns is-mobile is-centered is-gapless">
     <div class="column max-width">
-      <section class="top">
+      <section class="top no-grab">
         <div>
           <div>
             <div class="level is-mobile">
