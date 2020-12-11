@@ -23,7 +23,9 @@
             <div level-item></div>
           </div>
           <div class="level-bottom level is-mobile">
-            <div level-item style="width: 30px"></div>
+            <div level-item class="ends" style="text-align: right; width: 30px;" @click="repeat">
+              <b-icon level-item :icon="`${!player.repeat ? 'repeat-off' : player.repeat === 1 ? 'repeat-once' : 'repeat'}`" class="pointer"></b-icon>
+            </div>
             <div level-item class="middle" style="width: 100%; text-align: center">
               <h6 class="title is-5 song-title">{{ player.queue[player.index].Name }}</h6>
               <h6 class="subtitle is-6 song-title">{{ player.queue[player.index].artist }}</h6>
@@ -147,6 +149,10 @@ export default class Player extends Vue {
 
   likeSong() {
     PlayerService.likeItem();
+  }
+
+  repeat() {
+    PlayerService.handleRepeat();
   }
 }
 </script>
