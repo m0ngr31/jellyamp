@@ -1,6 +1,6 @@
-import {Howl, Howler} from 'howler';
 import Vue from 'vue';
 import _ from 'lodash';
+import $buzz from 'musquito';
 
 import JellyfinService from './jellyfin';
 
@@ -21,6 +21,8 @@ Vue.filter('duration', value => {
   return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 });
 
+$buzz.setup();
+
 class Player {
   queue = [];
   index = null;
@@ -31,6 +33,7 @@ class Player {
 
   lastPrev = -1;
 
+  // Update playback progress on server every 10 seconds
   updateProgress = _.throttle(ticks => {
     const data = {
       IsPaused: false,
@@ -82,7 +85,7 @@ class Player {
       this.player = null;
     }
 
-    Howler.stop();
+    // Howler.stop();
 
     this.queue = _.map(queue, (item, index) => {
       const songUrl = JellyfinService.getItemImageUrl(item);
@@ -94,7 +97,7 @@ class Player {
 
       // Preload the first 3 items in the queue
       if (index < 3) {
-        item.howl = this.createHowl(item);
+        item.howl = this.createPlayer(item);
       }
 
       return item;
@@ -147,15 +150,18 @@ class Player {
     }
   }
 
-  createHowl(item) {
+  createPlayer(item) {
     const [url, params] = JellyfinService.getItemPlayUrl(item.Id);
     item.params = params;
 
-    const howl = new Howl({
-      src: [url],
-      html5: true,
+    const song = $buzz({
+      src: url,
+      stream: true,
+      // crossOrigin: 'anonymous',
+      // crossorigin: 'anonymous',
+      // preload: true,
       format: ['aac'],
-      onplay: () => {
+      onplaystart: () => {
         this.playing = true;
 
         if (this.viewModel && this.viewModel.$el) {
@@ -208,7 +214,7 @@ class Player {
           }
         }
       },
-      onend: () => {
+      onplayend: () => {
         this.skip('next');
 
         JellyfinService.stopPlaying({
@@ -251,18 +257,7 @@ class Player {
           ItemId: item.Id,
         });
       },
-      onloaderror: err => {
-        console.log(err);
-        if (this.viewModel) {
-          this.viewModel.$buefy.toast.open({
-            message: 'Playback failed.',
-            type: 'is-danger'
-          });
-        }
-
-        this.skip('next');
-      },
-      onplayerror: err => {
+      onerror: err => {
         console.log(err);
         if (this.viewModel) {
           this.viewModel.$buefy.toast.open({
@@ -272,10 +267,10 @@ class Player {
         }
 
         this.skip('next');
-      }
+      },
     });
 
-    return howl;
+    return song;
   }
 
   play(index) {
@@ -290,12 +285,13 @@ class Player {
     this.index = index;
     const data = this.queue[index];
 
-    if (!data.howl) {
-      data.howl = this.createHowl(data);
+    if (!data.song) {
+      data.song = this.createPlayer(data);
     }
 
-    this.player = data.howl;
+    this.player = data.song;
 
+    // this.player.load();
     this.player.play();
   }
 
@@ -316,7 +312,7 @@ class Player {
       return;
     }
 
-    Howler.stop();
+    // Howler.stop();
   }
 
   seek(percentage) {
@@ -419,6 +415,7 @@ if (window.ipcRenderer) {
   });
 }
 
+// Browser mediaSession event listeners
 if ('mediaSession' in navigator) {
   navigator.mediaSession.playbackState = 'none';
 
