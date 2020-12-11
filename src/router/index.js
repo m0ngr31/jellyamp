@@ -8,6 +8,7 @@ import Search from '../views/Search.vue';
 import Settings from '../views/Settings.vue';
 import Album from '../views/Album.vue';
 import Artist from '../views/Artist.vue';
+import Playlist from '../views/Playlist.vue';
 import Song from '../views/Song.vue';
 import Genre from '../views/Genre.vue';
 
@@ -53,6 +54,11 @@ const routes = [
         path: 'song/:id',
         name: 'Song',
         component: Song,
+      },
+      {
+        path: 'playlist/:id',
+        name: 'Playlist',
+        component: Playlist,
       },
       {
         path: 'genre/:id',

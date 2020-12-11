@@ -47,6 +47,8 @@ export default class ItemTile extends Vue {
       this.$router.push({ name: 'Song', params: { id: this.item.Id }});
     } else if (this.itemType === 'album') {
       this.$router.push({ name: 'Album', params: { id: this.item.Id }});
+    } else if (this.itemType === 'playlist') {
+      this.$router.push({ name: 'Playlist', params: { id: this.item.Id }});
     }
   }
 }
