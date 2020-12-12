@@ -77,6 +77,10 @@ class Player {
     this.queue[this.index].howl = null;
   }
 
+  changeVolume(val) {
+    Howler.volume(val / 100);
+  }
+
   setQueue(queue) {
     if (this.player) {
       this.player.stop();
