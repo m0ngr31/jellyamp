@@ -12,6 +12,7 @@ let currentPlaytime = 0;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isLinux = process.platform === 'linux';
+const isWindows = process.platform === 'win32';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -40,6 +41,8 @@ function createWindow() {
     },
   });
 
+  // win.setThumbarButtons([]);
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -55,6 +58,10 @@ function createWindow() {
   });
 
   win.on('maximize', () => win.unmaximize());
+
+  if (isWindows) {
+    win.setThumbarButtons([]);
+  }
 }
 
 // Quit when all windows are closed.
@@ -96,6 +103,8 @@ app.on('ready', async () => {
 });
 
 const setupPlayer = ev => {
+  playerHandler = ev;
+
   if (isLinux) {
     Player = require('mpris-service');
 
@@ -107,8 +116,6 @@ const setupPlayer = ev => {
       supportedInterfaces: ['player'],
       canSeek: false,
     });
-
-    playerHandler = ev;
 
     player.on('next', () => { currentPlaytime = 0; playerHandler.reply('skip'); });
     player.on('previous', () => { currentPlaytime = 0; playerHandler.reply('prev'); });
@@ -164,9 +171,63 @@ if (isLinux) {
   });
 }
 
+if (isWindows) {
+  ipcMain.on('play', ev => {
+    if (!playerHandler) {
+      setupPlayer(ev);
+    }
+
+    win.setThumbarButtons([
+      {
+        tooltip: 'Previous',
+        icon: path.join(__static, 'skip-previous.png'),
+        click: () => playerHandler.reply('prev'),
+      }, {
+        tooltip: 'Pause',
+        icon: path.join(__static, 'pause-circle.png'),
+        click: () => playerHandler.reply('playPause'),
+      }, {
+        tooltip: 'Skip',
+        icon: path.join(__static, 'skip-next.png'),
+        click: () => playerHandler.reply('skip'),
+      }
+    ]);
+  });
+
+  ipcMain.on('pause', ev => {
+    if (!playerHandler) {
+      setupPlayer(ev);
+    }
+
+    win.setThumbarButtons([
+      {
+        tooltip: 'Previous',
+        icon: path.join(__static, 'skip-previous.png'),
+        click: () => playerHandler.reply('prev'),
+      }, {
+        tooltip: 'Play',
+        icon: path.join(__static, 'play-circle.png'),
+        click: () => playerHandler.reply('playPause'),
+      }, {
+        tooltip: 'Skip',
+        icon: path.join(__static, 'skip-next.png'),
+        click: () => playerHandler.reply('skip'),
+      }
+    ]);
+  });
+
+  ipcMain.on('stop', ev => {
+    if (!playerHandler) {
+      setupPlayer(ev);
+    }
+
+    win.setThumbarButtons([]);
+  });
+}
+
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  if (process.platform === 'win32') {
+  if (isWindows) {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
         app.quit();
