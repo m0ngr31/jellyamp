@@ -43,4 +43,4 @@ win:
 
 publish:
   provider: github
-  publishAutoUpdate: always
+  publishAutoUpdate: true
