@@ -44,4 +44,3 @@ win:
 publish:
   provider: github
   publishAutoUpdate: true
-  releaseType: release
