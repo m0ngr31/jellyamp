@@ -159,6 +159,7 @@ class Player {
     const howl = new Howl({
       src: [url],
       html5: true,
+      preload: 'metadata',
       format: ['aac'],
       onplay: () => {
         this.playing = true;
@@ -248,7 +249,11 @@ class Player {
         }
       },
       onseek: () => {
-        setTimeout(() => this.step(), 250);
+        // Just make sure seek takes off eventually
+        // Can get stuck after something is buffering
+        for (let a = 1; a <= 100; a++) {
+          _.delay(() => this.step(), 250 * a);
+        }
       },
       onstop: () => {
         this.playing = false;
