@@ -134,7 +134,17 @@ const JellyfinService = {
     return await Requests.delete(`Users/${userId}/FavoriteItems/${itemId}`);
   },
   getItemImageUrl: item => {
+    const serverUri = JellyfinService.getServer().uri;
     const keys = Object.keys(item.ImageTags);
+
+    const albumInfo = {
+      Id: item.AlbumId || null,
+      Image: item.AlbumPrimaryImageTag || null,
+    }
+
+    if (albumInfo.Id && albumInfo.Image) {
+      return `${serverUri}Items/${albumInfo.Id}/Images/Primary`;
+    }
 
     if (!keys.length) {
       return null;
@@ -148,7 +158,6 @@ const JellyfinService = {
       imageKey = keys[0];
     }
 
-    const serverUri = JellyfinService.getServer().uri;
     return `${serverUri}Items/${item.Id}/Images/${imageKey}`;
   },
   getInstantMix: async itemId => {
