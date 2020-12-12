@@ -4,6 +4,7 @@ export const SearchService = {
     artists: [],
     albums: [],
     songs: [],
+    playlists: [],
   },
   searchTerm: '',
   lastRoute: 'Search',

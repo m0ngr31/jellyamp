@@ -66,6 +66,15 @@
                   item-type="song"
                 ></ItemTile>
               </div>
+              <p class="title" v-if="searchService.search.playlists.length">Playlists</p>
+              <div class="columns is-mobile is-gapless is-multiline">
+                <ItemTile
+                  v-for="playlist of searchService.search.playlists"
+                  v-bind:key="playlist.Id"
+                  :item="playlist"
+                  item-type="playlist"
+                ></ItemTile>
+              </div>
             </div>
           </div>
         </div>
@@ -105,11 +114,12 @@ export default class Search extends Vue {
     this.isSearching = true;
 
     try {
-      const [artists, songs, albums] = await JellyfinService.search(txt);
+      const [artists, songs, albums, playlists] = await JellyfinService.search(txt);
 
       SearchService.search.albums = albums || [];
       SearchService.search.artists = artists || [];
       SearchService.search.songs = songs || [];
+      SearchService.search.playlists = playlists || [];
       SearchService.searchTerm = txt;
     } catch (e) {
       console.log(e);

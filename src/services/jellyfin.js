@@ -75,8 +75,9 @@ const JellyfinService = {
     const artists = await Requests.get('Artists', {searchTerm}, true, true);
     const songs = await Requests.get(`Users/${userId}/Items`, {searchTerm, IncludeItemTypes: 'Audio', Recursive: true}, true, true);
     const albums = await Requests.get(`Users/${userId}/Items`, {searchTerm, IncludeItemTypes: 'MusicAlbum', Recursive: true}, true, true);
+    const playlists = await Requests.get(`Users/${userId}/Items`, {searchTerm, IncludeItemTypes: 'Playlist', Recursive: true}, true, true);
 
-    return [artists.Items, songs.Items, albums.Items];
+    return [artists.Items, songs.Items, albums.Items, playlists.Items];
   },
   getArtists: async () => {
     const userId = JellyfinService.getUser().Id;
@@ -114,6 +115,16 @@ const JellyfinService = {
     const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
     return res.Items;
   },
+  getPlaylistSongs: async itemId => {
+    const UserId = JellyfinService.getUser().Id;
+
+    const params = {
+      UserId,
+    };
+
+    const res = await Requests.get(`Playlists/${itemId}/Items`, params, true, true);
+    return res.Items;
+  },
   likeId: async itemId => {
     const userId = JellyfinService.getUser().Id;
     return await Requests.post(`Users/${userId}/FavoriteItems/${itemId}`);
@@ -123,7 +134,17 @@ const JellyfinService = {
     return await Requests.delete(`Users/${userId}/FavoriteItems/${itemId}`);
   },
   getItemImageUrl: item => {
+    const serverUri = JellyfinService.getServer().uri;
     const keys = Object.keys(item.ImageTags);
+
+    const albumInfo = {
+      Id: item.AlbumId || null,
+      Image: item.AlbumPrimaryImageTag || null,
+    }
+
+    if (albumInfo.Id && albumInfo.Image) {
+      return `${serverUri}Items/${albumInfo.Id}/Images/Primary`;
+    }
 
     if (!keys.length) {
       return null;
@@ -137,7 +158,6 @@ const JellyfinService = {
       imageKey = keys[0];
     }
 
-    const serverUri = JellyfinService.getServer().uri;
     return `${serverUri}Items/${item.Id}/Images/${imageKey}`;
   },
   getInstantMix: async itemId => {

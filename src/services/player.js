@@ -28,6 +28,7 @@ class Player {
   viewModel = null;
   showQueue = false;
   playing = true;
+  repeat = null;
 
   lastPrev = -1;
 
@@ -74,6 +75,10 @@ class Player {
     this.player.unload();
     this.player = null;
     this.queue[this.index].howl = null;
+  }
+
+  changeVolume(val) {
+    Howler.volume(val / 100);
   }
 
   setQueue(queue) {
@@ -154,6 +159,7 @@ class Player {
     const howl = new Howl({
       src: [url],
       html5: true,
+      preload: 'metadata',
       format: ['aac'],
       onplay: () => {
         this.playing = true;
@@ -209,7 +215,17 @@ class Player {
         }
       },
       onend: () => {
-        this.skip('next');
+        if (this.repeat === 1) { // Single song repeat
+          this.play(this.index);
+        } else if (this.index + 1 === this.queue.length) { // Last song in queue
+          if (this.repeat === 2) { // Repeat all
+            this.play(0);
+          } else { // Don't nuke queue after it ends
+            this.play(0, false);
+          }
+        } else {
+          this.skip('next');
+        }
 
         JellyfinService.stopPlaying({
           IsPaused: false,
@@ -230,6 +246,13 @@ class Player {
           setTimeout(() => {
             navigator.mediaSession.playbackState = 'paused';
           });
+        }
+      },
+      onseek: () => {
+        // Just make sure seek takes off eventually
+        // Can get stuck after something is buffering
+        for (let a = 1; a <= 100; a++) {
+          _.delay(() => this.step(), 250 * a);
         }
       },
       onstop: () => {
@@ -278,7 +301,7 @@ class Player {
     return howl;
   }
 
-  play(index) {
+  play(index, autoPlay = true) {
     if (!this.queue.length || index < 0 || index >= this.queue.length) {
       return;
     }
@@ -296,7 +319,9 @@ class Player {
 
     this.player = data.howl;
 
-    this.player.play();
+    if (autoPlay) {
+      this.player.play();
+    }
   }
 
   playPause() {
@@ -353,6 +378,16 @@ class Player {
     }
   }
 
+  handleRepeat() {
+    if (!this.repeat) {
+      this.repeat = 1;
+    } else if (this.repeat === 1) {
+      this.repeat = 2;
+    } else {
+      this.repeat = null;
+    }
+  }
+
   handleBack() {
     if (!this.player) {
       return;
@@ -372,27 +407,37 @@ class Player {
     let index = this.index;
 
     if (dir === 'next') {
+      if (this.repeat === 1) {
+        this.repeat = null;
+      }
+
       index = index + 1;
+
       if (index >= this.queue.length) {
-        this.clearHowl();
+        index = this.queue.length - 1;
+        this.skipTo(0, false);
+      } else {
+        this.skipTo(index);
       }
     } else {
       index = index - 1;
-      if (index < 0) {
-        this.clearHowl();
-      }
-    }
 
-    this.skipTo(index);
+      if (index < 0) {
+        // Don't nuke playlist when you hit back on the first item in queue
+        index = this.index;
+      }
+
+      this.skipTo(index);
+    }
   }
 
-  skipTo(index) {
+  skipTo(index, autoPlay = true) {
     if (!this.player) {
       return;
     }
 
     this.clearHowl();
-    this.play(index);
+    this.play(index, autoPlay);
   }
 }
 
