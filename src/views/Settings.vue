@@ -30,7 +30,10 @@
               </b-field>
             </div>
             <div class="column">
-              <b-button type="is-primary" @click="logout" style="margin-top: 50px;">Log out</b-button>
+              <b-button type="is-link is-light" @click="checkForUpdates" style="margin-top: 25px;">Check for updates</b-button>
+            </div>
+            <div class="column">
+              <b-button type="is-primary" @click="logout" style="margin-top: 25px;">Log out</b-button>
             </div>
           </div>
         </div>
@@ -47,6 +50,7 @@ import _ from "lodash";
 import {getItemOrDefault, setItem} from '../services/localstorage';
 import JellyfinService from "../services/jellyfin";
 import PlayerService from "../services/player";
+import GithubService from "../services/github";
 
 @Component({
   name: "Settings",
@@ -66,6 +70,15 @@ export default class Settings extends Vue {
 
   logout() {
     JellyfinService.logout();
+  }
+
+  checkForUpdates() {
+    console.log("Checking for updates....");
+    
+    GithubService.getLatestVersion();
+    alert("new Version is available");
+
+    
   }
 
   goBack() {

@@ -48,6 +48,7 @@ export default class App extends Vue {
       window.electronRemote.getCurrentWindow().minimize();
     }
   }
+
 }
 </script>
 
