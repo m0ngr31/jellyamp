@@ -30,7 +30,7 @@
               </b-field>
             </div>
             <div class="column">
-              <b-button type="is-link is-light" @click="checkForUpdates" style="margin-top: 25px;">Check for updates</b-button>
+              <b-switch style="margin-top: 25px;" v-model="checkForUpdates" @input="toggleCheckForUpdates" type="is-success">Check for updates</b-switch>
             </div>
             <div class="column">
               <b-button type="is-primary" @click="logout" style="margin-top: 25px;">Log out</b-button>
@@ -58,10 +58,12 @@ import GithubService from "../services/github";
 export default class Settings extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   quality = null;
+  checkForUpdates = null;
   player = PlayerService;
 
   mounted() {
     this.quality = getItemOrDefault('bitrate', '12444445');
+    this.checkForUpdates = getItemOrDefault('check-for-updates', true);
   }
 
   bitrateChanged() {
@@ -72,13 +74,8 @@ export default class Settings extends Vue {
     JellyfinService.logout();
   }
 
-  checkForUpdates() {
-    console.log("Checking for updates....");
-    
-    GithubService.getLatestVersion();
-    alert("new Version is available");
-
-    
+  toggleCheckForUpdates() {
+    setItem('check-for-updates', this.checkForUpdates);
   }
 
   goBack() {
