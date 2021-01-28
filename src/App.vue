@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-titlebar
-      v-if="isElectron"
+      v-if="showTitle"
       theme="dark"
       :platform="distro"
       :is-maximizable="false"
@@ -31,7 +31,9 @@ import {Notifications} from './services/notifications';
 })
 export default class App extends Vue {
   isElectron = window.ipcRenderer ? true : false;
-  distro = process.env.VUE_APP_OS;
+  distro = window.electronRemote.process.platform;
+
+  showTitle = this.isElectron && this.distro !== 'linux';
 
   mounted() {
     Notifications.service = this.$buefy.toast;

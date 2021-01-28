@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import {
   createProtocol,
   installVueDevtools,
@@ -30,7 +30,7 @@ function createWindow() {
     height: 700,
     resizable: false,
     maximizable: false,
-    frame: false,
+    frame: isLinux,
     backgroundColor: '#000B25',
     icon: path.join(__static, 'icon.png'),
     webPreferences: {
@@ -40,6 +40,8 @@ function createWindow() {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
     },
   });
+
+  if (isLinux) win.removeMenu();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -97,8 +99,32 @@ app.on('ready', async () => {
     }
   } else {}
 
+  registerShortcuts();
+
   createWindow();
 });
+
+const registerShortcuts = () => {
+  globalShortcut.register('MediaPlayPause', () => {
+    if (playerHandler !== undefined)
+      playerHandler.reply('playPause');
+  });
+
+  globalShortcut.register('MediaStop', () => {
+    if (playerHandler !== undefined)
+      playerHandler.reply('stop');
+  });
+
+  globalShortcut.register('MediaNextTrack', () => {
+    if (playerHandler !== undefined)
+      playerHandler.reply('skip');
+  });
+
+  globalShortcut.register('MediaPreviousTrack', () => {
+    if (playerHandler !== undefined)
+      playerHandler.reply('prev');
+  });
+}
 
 const setupPlayer = ev => {
   playerHandler = ev;
