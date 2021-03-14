@@ -28,24 +28,17 @@ export default class Main extends Vue {
 
 
   async mounted() {
-    // const checkForUpdates = getItemOrDefault('check-for-updates', true);
+    const checkForUpdates = getItemOrDefault('notify-of-updates', true);
 
-// checkForUpdates()
-
-    // console.log(window._app_version);
-
-    autoUpdater.checkForUpdates().then((result) => {
-          console.log(result);
-        });
-
-
-    // if(checkForUpdates && autoUpdater.) {
-    //   this.$buefy.toast.open({
-    //     duration: 5000,
-    //     message: 'An update for Jellyamp is available.',
-    //     type: 'is-info'
-    //   });
-    // }
+    window.ipcRenderer.on('update-available', (event, versionInfo) => {
+        if(checkForUpdates) {
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: `Version ${versionInfo.version} for Jellyamp is available.`,
+            type: 'is-info'
+          });
+        }
+    });
   }
 }
 </script>
