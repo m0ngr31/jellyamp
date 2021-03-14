@@ -57,7 +57,7 @@ import PlayerService from "../services/player";
 export default class Settings extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   quality = null;
-  checkForUpdates = null;
+  notifyOfUpdates = null;
   player = PlayerService;
 
   mounted() {
