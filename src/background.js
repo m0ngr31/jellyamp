@@ -16,6 +16,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const isLinux = process.platform === 'linux';
 const isWindows = process.platform === 'win32';
 
+autoUpdater.autoDownload = false;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -103,8 +105,14 @@ app.on('ready', async () => {
 });
 
 app.on('ready', function()  {
-  autoUpdater.checkForUpdates().then((result) => {
-    console.log(result);
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.on('update-available', (updateInfo) => {
+  win.webContents.on('did-finish-load', () => {
+      win.webContents.send('updates', {
+        version: updateInfo.version
+      })
   });
 });
 
