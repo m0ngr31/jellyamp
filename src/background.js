@@ -110,7 +110,7 @@ app.on('ready', function()  {
 
 autoUpdater.on('update-available', (updateInfo) => {
   win.webContents.on('did-finish-load', () => {
-      win.webContents.send('updates', {
+      win.webContents.send('update-available', {
         version: updateInfo.version
       })
   });
