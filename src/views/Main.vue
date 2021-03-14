@@ -13,7 +13,6 @@ import Component from 'vue-class-component';
 
 import Player from '../components/Player';
 import PlayerService from '../services/player';
-import UpdateService from '../services/update';
 
 import { getItemOrDefault } from '../services/localstorage';
 
@@ -27,17 +26,26 @@ export default class Main extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   player = Player;
 
+
   async mounted() {
+    // const checkForUpdates = getItemOrDefault('check-for-updates', true);
 
-    const checkForUpdates = getItemOrDefault('check-for-updates', true);
+// checkForUpdates()
 
-    if(checkForUpdates && await UpdateService.isUpdateAvailable()) {
-      this.$buefy.toast.open({
-        duration: 5000,
-        message: 'An update for Jellyamp is available.',
-        type: 'is-info'
-      });
-    }
+    // console.log(window._app_version);
+
+    autoUpdater.checkForUpdates().then((result) => {
+          console.log(result);
+        });
+
+
+    // if(checkForUpdates && autoUpdater.) {
+    //   this.$buefy.toast.open({
+    //     duration: 5000,
+    //     message: 'An update for Jellyamp is available.',
+    //     type: 'is-info'
+    //   });
+    // }
   }
 }
 </script>

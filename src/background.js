@@ -5,6 +5,8 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib';
 import path from 'path';
 
+import { autoUpdater } from "electron-updater"
+
 let player;
 let Player;
 let playerHandler;
@@ -98,6 +100,12 @@ app.on('ready', async () => {
   } else {}
 
   createWindow();
+});
+
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates().then((result) => {
+    console.log(result);
+  });
 });
 
 const setupPlayer = ev => {
