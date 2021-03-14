@@ -30,7 +30,7 @@
               </b-field>
             </div>
             <div class="column">
-              <b-switch style="margin-top: 25px;" v-model="checkForUpdates" @input="toggleCheckForUpdates" type="is-success">Check for updates</b-switch>
+              <b-switch style="margin-top: 25px;" v-model="notifyForUpdates" @input="toggleNotifyOfUpdates" type="is-success">Notify of updates</b-switch>
             </div>
             <div class="column">
               <b-button type="is-primary" @click="logout" style="margin-top: 25px;">Log out</b-button>
@@ -50,7 +50,6 @@ import _ from "lodash";
 import {getItemOrDefault, setItem} from '../services/localstorage';
 import JellyfinService from "../services/jellyfin";
 import PlayerService from "../services/player";
-import GithubService from "../services/github";
 
 @Component({
   name: "Settings",
@@ -63,7 +62,7 @@ export default class Settings extends Vue {
 
   mounted() {
     this.quality = getItemOrDefault('bitrate', '12444445');
-    this.checkForUpdates = getItemOrDefault('check-for-updates', true);
+    this.notifyOfUpdates = getItemOrDefault('notify-of-updates', true);
   }
 
   bitrateChanged() {
@@ -74,8 +73,8 @@ export default class Settings extends Vue {
     JellyfinService.logout();
   }
 
-  toggleCheckForUpdates() {
-    setItem('check-for-updates', this.checkForUpdates);
+  toggleNotifyOfUpdates() {
+    setItem('notify-of-updates', this.notifyOfUpdates);
   }
 
   goBack() {
