@@ -22,6 +22,11 @@
           </b-tooltip>
           <b-tooltip label="Inject Song into current queue" position="is-left">
             <div @click="playSongs(true)">
+              <b-icon v-if="player.player" level-item size="is-medium" icon="needle" class="pointer"></b-icon>
+            </div>
+          </b-tooltip>
+          <b-tooltip label="Add Song to current queue" position="is-left" style="margin-left: 10px;">
+            <div @click="playSongs(false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
           </b-tooltip>
@@ -92,7 +97,7 @@ export default class Song extends Vue {
     });
   }
 
-  playSongs(inject = false) {
+  playSongs(inject = false, add = false) {
     let songs = [_.cloneDeep(this.song)];
 
     let message;
@@ -100,6 +105,9 @@ export default class Song extends Vue {
     if (inject) {
       PlayerService.injectQueue(songs);
       message = 'Injected song into queue';
+    } else if (add) {
+      PlayerService.addToQueue(songs);
+      message = 'Added song to queue';
     } else {
       PlayerService.setQueue(songs);
       message = 'Playing song';

@@ -3,6 +3,7 @@ import Vue from 'vue';
 import _ from 'lodash';
 
 import JellyfinService from './jellyfin';
+import {Notifications} from './notifications';
 
 import placeholderImg from '../assets/logo.png';
 
@@ -29,7 +30,9 @@ class Player {
   showQueue = false;
   playing = true;
   repeat = null;
+  numErrors = 0;
 
+  errorIndex = -1;
   lastPrev = -1;
 
   updateProgress = _.throttle(ticks => {
@@ -126,6 +129,20 @@ class Player {
     }
   }
 
+  addToQueue(queue) {
+    const updateQueue = _.map(queue, item => {
+      const songUrl = JellyfinService.getItemImageUrl(item);
+      item.thumbnailImage = songUrl ? songUrl : placeholderImg;
+
+      item.artist = item.Artists[0] || item.AlbumArtist;
+      item.loved = item.UserData.IsFavorite || false;
+
+      return item;
+    });
+
+    this.queue = [...this.queue, ...updateQueue];
+  }
+
   removeItem(index) {
     this.queue.splice(index, 1);
 
@@ -148,7 +165,7 @@ class Player {
         this.queue[this.index].loved = true;
       }
     } catch (e) {
-      console.log(e);
+      console.log('error liking item: ', e);
     }
   }
 
@@ -275,24 +292,33 @@ class Player {
         });
       },
       onloaderror: err => {
-        console.log(err);
-        if (this.viewModel) {
-          this.viewModel.$buefy.toast.open({
-            message: 'Playback failed.',
-            type: 'is-danger'
-          });
-        }
+        console.log('onloaderror: ', err);
 
-        this.skip('next');
+        Notifications.throttle({
+          duration: 5000,
+          message: 'Playback failed.',
+          position: 'is-top',
+          type: 'is-danger'
+        });
+
+        this.numErrors += 1;
+
+        if (this.numErrors < 3) {
+          if (!this.errorIndex) {
+            this.errorIndex = this.index;
+          }
+          this.skip('next');
+        }
       },
       onplayerror: err => {
-        console.log(err);
-        if (this.viewModel) {
-          this.viewModel.$buefy.toast.open({
-            message: 'Could not play song.',
-            type: 'is-danger'
-          });
-        }
+        console.log('onplayerror: ', err);
+
+        Notifications.throttle({
+          duration: 5000,
+          message: 'Could not play song.',
+          position: 'is-top',
+          type: 'is-danger'
+        });
 
         this.skip('next');
       }

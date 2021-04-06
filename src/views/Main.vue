@@ -12,7 +12,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import Player from '../components/Player';
-import PlayerService from '../services/player';
 
 import { getItemOrDefault } from '../services/localstorage';
 

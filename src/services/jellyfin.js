@@ -1,8 +1,9 @@
 import {v4 as uuidv4 } from 'uuid';
+import _ from 'lodash';
 
-import router from '../router/index';
-import {getItemOrDefault, setItem, removeItem} from './localstorage';
+import {getItemOrDefault, setItem} from './localstorage';
 import {Requests} from './requests';
+import AuthService from './auth';
 
 const cleanUrl = url => {
   if (url.slice(0, 4) !== 'http') {
@@ -20,9 +21,6 @@ const JellyfinService = {
   getUser: () => {
     return getItemOrDefault('user', {Id: null});
   },
-  setUser: userData => {
-    setItem('user', userData);
-  },
   getServer: () => {
     return getItemOrDefault('server', {uri: null});
   },
@@ -31,9 +29,6 @@ const JellyfinService = {
   },
   getToken: () => {
     return getItemOrDefault('api-token', null);
-  },
-  setToken: token => {
-    setItem('api-token', token);
   },
   checkServer: async serverUri => {
     try {
@@ -50,21 +45,13 @@ const JellyfinService = {
     try {
       const auth = await Requests.post('users/authenticatebyname', {Username: username, Pw: password}, true, false);
 
-      JellyfinService.setUser(auth.User);
-      JellyfinService.setToken(auth.AccessToken);
+      AuthService.login(auth.User, auth.AccessToken)
     } catch (e) {
       console.log(e);
       throw new Error('Could not login');
     }
   },
-  logout: () => {
-    removeItem('api-token');
-    removeItem('server');
-    removeItem('user');
-    removeItem('bitrate');
-
-    router.push({name: 'Login'});
-  },
+  logout: () => AuthService.logout(),
   getUsers: async () => {
     const users = await Requests.get('users/public', null, true, false);
     console.log(users);
@@ -84,6 +71,51 @@ const JellyfinService = {
     const artists = await Requests.get('Artists/AlbumArtists', {userId}, true, true);
     return artists.Items;
   },
+  getAlbums: async () => {
+    const params = {
+      SortBy:	'SortName',
+      SortOrder: 'Ascending',
+      IncludeItemTypes: 'MusicAlbum',
+      Recursive: true,
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const albums = await Requests.get(`Users/${userId}/Items`, params, true, true);
+
+    return albums.Items;
+  },
+  getGenres: async () => {
+    const userId = JellyfinService.getUser().Id;
+    const genres = await Requests.get('MusicGenres', {userId}, true, true);
+    return genres.Items;
+  },
+  getPlaylists: async () => {
+    const params = {
+      SortBy:	'SortName',
+      SortOrder: 'Ascending',
+      IncludeItemTypes: 'Playlist',
+      Recursive: true,
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const playlists = await Requests.get(`Users/${userId}/Items`, params, true, true);
+
+    return _.filter(playlists.Items, item => item.MediaType === 'Audio');
+  },
+  getFavorites: async () => {
+    const params = {
+      SortBy:	'SortName',
+      SortOrder: 'Ascending',
+      IncludeItemTypes: 'Audio',
+      Recursive: true,
+      IsFavorite: true,
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const favotites = await Requests.get(`Users/${userId}/Items`, params, true, true);
+
+    return favotites.Items;
+  },
   getItem: async itemId => {
     const userId = JellyfinService.getUser().Id;
     return Requests.get(`Users/${userId}/Items/${itemId}`, null, true, true);
@@ -94,7 +126,6 @@ const JellyfinService = {
       Recursive: true,
       IncludeItemTypes: ['MusicAlbum', 'Audio'],
       SortOrder: 'Descending',
-      Limit: 500,
     };
 
     const userId = JellyfinService.getUser().Id;
@@ -109,6 +140,7 @@ const JellyfinService = {
     const params = {
       ParentId,
       SortBy: 'SortName',
+      SortOrder: 'Ascending',
     };
 
     const userId = JellyfinService.getUser().Id;
@@ -123,6 +155,19 @@ const JellyfinService = {
     };
 
     const res = await Requests.get(`Playlists/${itemId}/Items`, params, true, true);
+    return res.Items;
+  },
+  getGenreSongs: async itemId => {
+    const params = {
+      GenreIds: itemId,
+      SortBy: 'SortName',
+      SortOrder: 'Ascending',
+      Recursive: true,
+      IncludeItemTypes: 'Audio',
+    };
+
+    const userId = JellyfinService.getUser().Id;
+    const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
     return res.Items;
   },
   likeId: async itemId => {
