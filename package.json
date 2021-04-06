@@ -22,7 +22,7 @@
   "dependencies": {
     "@mdi/font": "^5.3.45",
     "@wuild/vue-titlebar": "^1.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "buefy": "^0.8.20",
     "bulma": "^0.9.0",
     "bulmaswatch": "^0.8.1",
