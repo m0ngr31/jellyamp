@@ -5,6 +5,8 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib';
 import path from 'path';
 
+import { autoUpdater } from "electron-updater"
+
 let player;
 let Player;
 let playerHandler;
@@ -13,6 +15,8 @@ let currentPlaytime = 0;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isLinux = process.platform === 'linux';
 const isWindows = process.platform === 'win32';
+
+autoUpdater.autoDownload = false;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -98,6 +102,18 @@ app.on('ready', async () => {
   } else {}
 
   createWindow();
+});
+
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.on('update-available', (updateInfo) => {
+  win.webContents.on('did-finish-load', () => {
+      win.webContents.send('update-available', {
+        version: updateInfo.version
+      })
+  });
 });
 
 const setupPlayer = ev => {

@@ -10,6 +10,7 @@ module.exports = {
       chainWebpackMainProcess: config => {
         config.resolve.alias.set('jsbi', path.join(__dirname, 'node_modules/jsbi/dist/jsbi-cjs.js'));
       },
+      nodeIntegration: true,
       builderOptions: {
         publish: ['github']
       }

@@ -41,6 +41,9 @@
               </b-field>
             </div>
             <div class="column">
+              <b-switch style="margin-top: 25px;" v-model="notifyOfUpdates" @input="toggleNotifyOfUpdates" type="is-success">Notify of updates</b-switch>
+            </div>
+            <div class="column">
               <b-button type="is-primary" @click="logout" style="margin-top: 50px;">Log out</b-button>
             </div>
           </div>
@@ -65,11 +68,13 @@ import PlayerService from "../services/player";
 export default class Settings extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   quality = null;
+  notifyOfUpdates = null;
   view = null;
   player = PlayerService;
 
   mounted() {
     this.quality = getItemOrDefault('bitrate', '12444445');
+    this.notifyOfUpdates = getItemOrDefault('notify-of-updates', true);
     this.view = getItemOrDefault('view', 'Artists');
   }
 
@@ -83,6 +88,10 @@ export default class Settings extends Vue {
 
   logout() {
     JellyfinService.logout();
+  }
+
+  toggleNotifyOfUpdates() {
+    setItem('notify-of-updates', this.notifyOfUpdates);
   }
 
   goBack() {
