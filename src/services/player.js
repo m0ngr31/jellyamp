@@ -118,6 +118,7 @@ class Player {
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
+      item.duration = Math.floor(item.RunTimeTicks / ticksInSecond);
 
       return item;
     });
@@ -136,6 +137,7 @@ class Player {
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
+      item.duration = Math.floor(item.RunTimeTicks / ticksInSecond);
 
       return item;
     });
