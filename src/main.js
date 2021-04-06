@@ -5,7 +5,15 @@ import VueTitlebar from '@wuild/vue-titlebar';
 import App from './App.vue';
 import router from './router';
 
-import JellyfinService from './services/jellyfin';
+// Disable Zooming: https://github.com/electron/electron/issues/8793#issuecomment-648307765
+window.onkeydown = function(evt) {
+  if (
+    (evt.code == 'Minus' || evt.code == 'Equal') &&
+    (evt.ctrlKey || evt.metaKey)
+  ) {
+    evt.preventDefault();
+  }
+}
 
 Vue.config.productionTip = false;
 
