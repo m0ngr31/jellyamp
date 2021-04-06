@@ -13,6 +13,7 @@ export const SearchService = {
   searchTerm: '',
   lastRoute: 'Search',
   lastId: null,
+  lastView: -1,
 };
 
 export default SearchService;

@@ -285,25 +285,29 @@ export default class Search extends Vue {
   }
 
   mounted() {
-    this.defaultView = getItemOrDefault('view', 'Artists');
+    if (SearchService.lastView > -1) {
+      this.carousel = SearchService.lastView;
+    } else {
+      this.defaultView = getItemOrDefault('view', 'Artists');
 
-    switch(this.defaultView) {
-      case 'Albums':
-        this.carousel = 1;
-        break;
-      case 'Genres':
-        this.carousel = 2;
-        break;
-      case 'Playlists':
-        this.carousel = 3;
-        break;
-      case 'Favorites':
-        this.carousel = 4;
-        break;
-      case 'Artists':
-      default:
-        this.carousel = 0;
-        break;
+      switch(this.defaultView) {
+        case 'Albums':
+          this.carousel = 1;
+          break;
+        case 'Genres':
+          this.carousel = 2;
+          break;
+        case 'Playlists':
+          this.carousel = 3;
+          break;
+        case 'Favorites':
+          this.carousel = 4;
+          break;
+        case 'Artists':
+        default:
+          this.carousel = 0;
+          break;
+      }
     }
 
     this.getData();
@@ -325,24 +329,28 @@ export default class Search extends Vue {
     switch(this.carousel) {
       case 1:
         this.defaultView = 'Albums';
+        SearchService.lastView = 1;
         if (!this.searchService.all_albums.length) {
           this.getAlbums();
         }
         break;
       case 2:
         this.defaultView = 'Genres';
+        SearchService.lastView = 2;
         if (!this.searchService.all_genres.length) {
           this.getGenres();
         }
         break;
       case 3:
         this.defaultView = 'Playlists';
+        SearchService.lastView = 3;
         if (!this.searchService.all_playlists.length) {
           this.getPlaylists();
         }
         break;
       case 4:
         this.defaultView = 'Favorites';
+        SearchService.lastView = 4;
         if (!this.searchService.all_favorites.length) {
           this.getFavorites();
         }
@@ -350,6 +358,7 @@ export default class Search extends Vue {
       case 0:
       default:
         this.defaultView = 'Artists';
+        SearchService.lastView = 0;
         if (!this.searchService.all_artists.length) {
           this.getArtists();
         }
