@@ -30,6 +30,17 @@
               </b-field>
             </div>
             <div class="column">
+              <b-field label="Default View" style="margin-top: 20px;">
+                <b-select placeholder="Select a view" v-model="view" @input="viewChanged">
+                  <option value="Artists">Artists</option>
+                  <option value="Albums">Albums</option>
+                  <option value="Genres">Genres</option>
+                  <option value="Playlists">Playlists</option>
+                  <option value="Favorites">Favorites</option>
+                </b-select>
+              </b-field>
+            </div>
+            <div class="column">
               <b-button type="is-primary" @click="logout" style="margin-top: 50px;">Log out</b-button>
             </div>
           </div>
@@ -54,14 +65,20 @@ import PlayerService from "../services/player";
 export default class Settings extends Vue {
   isElectron = window.ipcRenderer ? true : false;
   quality = null;
+  view = null;
   player = PlayerService;
 
   mounted() {
     this.quality = getItemOrDefault('bitrate', '12444445');
+    this.view = getItemOrDefault('view', 'Artists');
   }
 
   bitrateChanged() {
     setItem('bitrate', this.quality);
+  }
+
+  viewChanged() {
+    setItem('view', this.view);
   }
 
   logout() {

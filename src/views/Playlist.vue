@@ -27,6 +27,11 @@
           </b-tooltip>
           <b-tooltip label="Inject Playlist Songs into current queue" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length">
             <div @click="playSongs(false, true)">
+              <b-icon v-if="player.player" level-item size="is-medium" icon="needle" class="pointer"></b-icon>
+            </div>
+          </b-tooltip>
+          <b-tooltip label="Add Playlist Songs to current queue" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length" style="margin-left: 10px;">
+            <div @click="playSongs(false, false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
           </b-tooltip>
@@ -114,7 +119,7 @@ export default class Playlist extends Vue {
     });
   }
 
-  playSongs(shuffle = false, inject = false) {
+  playSongs(shuffle = false, inject = false, add = false) {
     let songs = _.cloneDeep(this.playlist.songs);
 
     if (shuffle) {
@@ -126,6 +131,9 @@ export default class Playlist extends Vue {
     if (inject) {
       PlayerService.injectQueue(songs);
       message = 'Injected playlist into queue';
+    } else if (add) {
+      PlayerService.addToQueue(songs);
+      message = 'Added playlist to queue';
     } else {
       PlayerService.setQueue(songs);
       message = 'Starting playlist';
