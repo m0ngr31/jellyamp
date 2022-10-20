@@ -1,5 +1,8 @@
 <template>
-  <div class="container overflowY" :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`">
+  <div
+    class="container overflowY"
+    :style="`height: calc(100vh ${player.player ? '- 60px' : ''}${isElectron ? '- 28px' : ''})`"
+  >
     <b-loading :active.sync="isLoading"></b-loading>
     <div v-if="!isLoading" style="padding: 10px;">
       <p level-item class="title">{{ playlist.Name }}</p>
@@ -15,22 +18,51 @@
               <b-icon level-item size="is-medium" icon="radio" class="pointer"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Play Playlist Songs" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length">
+          <b-tooltip
+            label="Play Playlist Songs"
+            position="is-left"
+            v-if="playlist && playlist.songs && playlist.songs.length"
+          >
             <div @click="playSongs()">
-              <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;" class="pointer"></b-icon>
+              <b-icon
+                level-item
+                size="is-medium"
+                icon="play-circle"
+                style="margin-left: 10px; margin-right: 10px;"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Shuffle Playlist Songs" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length">
+          <b-tooltip
+            label="Shuffle Playlist Songs"
+            position="is-left"
+            v-if="playlist && playlist.songs && playlist.songs.length"
+          >
             <div @click="playSongs(true)">
-              <b-icon level-item size="is-medium" icon="shuffle-variant" style="margin-right: 10px;" class="pointer"></b-icon>
+              <b-icon
+                level-item
+                size="is-medium"
+                icon="shuffle-variant"
+                style="margin-right: 10px;"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Inject Playlist Songs into current queue" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length">
+          <b-tooltip
+            label="Inject Playlist Songs into current queue"
+            position="is-left"
+            v-if="playlist && playlist.songs && playlist.songs.length"
+          >
             <div @click="playSongs(false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="needle" class="pointer"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Add Playlist Songs to current queue" position="is-left" v-if="playlist && playlist.songs && playlist.songs.length" style="margin-left: 10px;">
+          <b-tooltip
+            label="Add Playlist Songs to current queue"
+            position="is-left"
+            v-if="playlist && playlist.songs && playlist.songs.length"
+            style="margin-left: 10px;"
+          >
             <div @click="playSongs(false, false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
@@ -63,19 +95,19 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 
 import JellyfinService from '../services/jellyfin';
-import ItemTile from "../components/ItemTile";
+import ItemTile from '../components/ItemTile.vue';
 import PlayerService from '../services/player';
 
 @Component({
   name: 'Playlist',
   components: {
-    ItemTile
-  }
+    ItemTile,
+  },
 })
-export default class Playlist extends Vue {
+class Playlist extends Vue {
   isLoading = false;
   playlist = {};
-  isElectron = window.ipcRenderer ? true : false;
+  isElectron = !!window.ipcRenderer;
   player = PlayerService;
 
   mounted() {
@@ -100,7 +132,7 @@ export default class Playlist extends Vue {
       console.log(e);
       this.$buefy.toast.open({
         message: 'Could not get playlist',
-        type: 'is-danger'
+        type: 'is-danger',
       });
 
       this.goBack();
@@ -115,7 +147,7 @@ export default class Playlist extends Vue {
 
     this.$buefy.toast.open({
       message: 'Starting playlist radio',
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 
@@ -141,10 +173,12 @@ export default class Playlist extends Vue {
 
     this.$buefy.toast.open({
       message,
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 }
+
+export default Playlist;
 </script>
 
 <style>

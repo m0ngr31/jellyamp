@@ -41,10 +41,19 @@
               </b-field>
             </div>
             <div class="column">
-              <b-switch style="margin-top: 25px;" v-model="notifyOfUpdates" @input="toggleNotifyOfUpdates" type="is-success">Notify of updates</b-switch>
+              <b-switch
+                style="margin-top: 25px;"
+                v-model="notifyOfUpdates"
+                @input="toggleNotifyOfUpdates"
+                type="is-success"
+              >Notify of updates</b-switch>
             </div>
             <div class="column">
-              <b-button type="is-primary" @click="logout" style="margin-top: 50px;">Log out</b-button>
+              <b-button
+                type="is-primary"
+                @click="logout"
+                style="margin-top: 50px;"
+              >Log out</b-button>
             </div>
           </div>
         </div>
@@ -54,19 +63,18 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-import _ from "lodash";
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
 import {getItemOrDefault, setItem} from '../services/localstorage';
-import JellyfinService from "../services/jellyfin";
-import PlayerService from "../services/player";
+import JellyfinService from '../services/jellyfin';
+import PlayerService from '../services/player';
 
 @Component({
-  name: "Settings",
+  name: 'Settings',
 })
-export default class Settings extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class Settings extends Vue {
+  isElectron = !!window.ipcRenderer;
   quality = null;
   notifyOfUpdates = null;
   view = null;
@@ -98,6 +106,8 @@ export default class Settings extends Vue {
     this.$router.go(-1);
   }
 }
+
+export default Settings;
 </script>
 
 <style scoped>

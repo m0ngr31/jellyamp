@@ -1,5 +1,8 @@
 <template>
-  <div class="container overflowY" :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`">
+  <div
+    class="container overflowY"
+    :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`"
+  >
     <b-loading :active.sync="isLoading"></b-loading>
     <div v-if="!isLoading" style="padding: 10px;">
       <p level-item class="title">{{ song.Name }}</p>
@@ -17,17 +20,39 @@
           </b-tooltip>
           <b-tooltip label="Play Song" position="is-left">
             <div @click="playSongs()">
-              <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;" class="pointer"></b-icon>
+              <b-icon
+                level-item
+                size="is-medium"
+                icon="play-circle"
+                style="margin-left: 10px; margin-right: 10px;"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
           <b-tooltip label="Inject Song into current queue" position="is-left">
             <div @click="playSongs(true)">
-              <b-icon v-if="player.player" level-item size="is-medium" icon="needle" class="pointer"></b-icon>
+              <b-icon
+                v-if="player.player"
+                level-item
+                size="is-medium"
+                icon="needle"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Add Song to current queue" position="is-left" style="margin-left: 10px;">
+          <b-tooltip
+            label="Add Song to current queue"
+            position="is-left"
+            style="margin-left: 10px;"
+          >
             <div @click="playSongs(false, true)">
-              <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
+              <b-icon
+                v-if="player.player"
+                level-item
+                size="is-medium"
+                icon="playlist-plus"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
         </div>
@@ -40,21 +65,22 @@
 <script>
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import _ from 'lodash';
 
 import JellyfinService from '../services/jellyfin';
-import ItemTile from "../components/ItemTile";
+import ItemTile from '../components/ItemTile.vue';
 import PlayerService from '../services/player';
 
 @Component({
   name: 'Song',
   components: {
-    ItemTile
-  }
+    ItemTile,
+  },
 })
-export default class Song extends Vue {
+class Song extends Vue {
   isLoading = false;
   song = {};
-  isElectron = window.ipcRenderer ? true : false;
+  isElectron = !!window.ipcRenderer;
   player = PlayerService;
 
   mounted() {
@@ -78,7 +104,7 @@ export default class Song extends Vue {
       console.log(e);
       this.$buefy.toast.open({
         message: 'Could not get song',
-        type: 'is-danger'
+        type: 'is-danger',
       });
 
       this.goBack();
@@ -93,12 +119,12 @@ export default class Song extends Vue {
 
     this.$buefy.toast.open({
       message: 'Starting song radio',
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 
   playSongs(inject = false, add = false) {
-    let songs = [_.cloneDeep(this.song)];
+    const songs = [_.cloneDeep(this.song)];
 
     let message;
 
@@ -115,10 +141,12 @@ export default class Song extends Vue {
 
     this.$buefy.toast.open({
       message,
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 }
+
+export default Song;
 </script>
 
 <style>

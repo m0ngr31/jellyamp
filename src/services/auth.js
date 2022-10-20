@@ -1,7 +1,6 @@
-import router from '../router/index';
+import { Howler } from 'howler';
 
 import {setItem, removeItem} from './localstorage';
-import PlayerService from './player';
 
 const AuthService = {
   setUser: userData => {
@@ -15,15 +14,15 @@ const AuthService = {
     AuthService.setToken(token);
   },
   logout: () => {
-    PlayerService.stop();
+    Howler.stop();
 
     removeItem('api-token');
     removeItem('server');
     removeItem('user');
     removeItem('bitrate');
 
-    router.push({name: 'Login'});
-  }
-}
+    window.location.replace('/');
+  },
+};
 
 export default AuthService;

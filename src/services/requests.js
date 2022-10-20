@@ -3,23 +3,22 @@ import {v4 as uuidv4 } from 'uuid';
 
 import {version} from '../../package.json';
 
-import JellyfinService from './jellyfin';
 import {Notifications} from './notifications';
+import AuthService from './auth';
 import {getItemOrDefault, setItem} from './localstorage';
 
 const authAxios = axios.create();
 
 authAxios.interceptors.request.use(config => {
-  const token = JellyfinService.getToken();
+  const token = getItemOrDefault('api-token', null);
 
   if (token) {
+    // eslint-disable-next-line no-param-reassign
     config.headers.common['X-MediaBrowser-Token'] = token;
   }
 
   return config;
-}, error => {
-  return Promise.reject(error);
-});
+}, error => Promise.reject(error));
 
 authAxios.interceptors.response.use(res => res, err => {
   if (err.response && err.response.status === 401) {
@@ -27,10 +26,10 @@ authAxios.interceptors.response.use(res => res, err => {
       duration: 5000,
       message: 'Session expired. Logging out.',
       position: 'is-top',
-      type: 'is-warning'
+      type: 'is-warning',
     });
 
-    JellyfinService.logout();
+    AuthService.logout();
   }
 
   return Promise.reject(err);
@@ -38,6 +37,7 @@ authAxios.interceptors.response.use(res => res, err => {
 
 const genConfig = (url, isJellyfin) => {
   const config = {};
+  let newUrl = url;
 
   if (isJellyfin) {
     let deviceId = getItemOrDefault('deviceId', null);
@@ -48,22 +48,21 @@ const genConfig = (url, isJellyfin) => {
     }
 
     config.headers = {};
-    config.headers['X-Emby-Authorization'] =
-      `MediaBrowser Client="Jellyamp", Device="PC", DeviceId="${deviceId}", Version="${version}"`;
+    config.headers['X-Emby-Authorization'] = `MediaBrowser Client="Jellyamp", Device="PC", DeviceId="${deviceId}", Version="${version}"`;
 
-    const serverUrl = JellyfinService.getServer().uri;
+    const serverUrl = getItemOrDefault('server', {uri: null}).uri;
 
     if (!serverUrl) {
       throw new Error('No server information');
     }
 
-    url = `${serverUrl}${url}`;
+    newUrl = `${serverUrl}${url}`;
   }
 
-  return [url, config];
-}
+  return [newUrl, config];
+};
 
-export const Requests = {
+const Requests = {
   post: async (url, obj, jellyfinUrl = true, requiresAuth = true) => {
     const [uri, config] = genConfig(url, jellyfinUrl);
 
@@ -93,3 +92,5 @@ export const Requests = {
     return data;
   },
 };
+
+export default Requests;

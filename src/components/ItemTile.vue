@@ -25,10 +25,10 @@ import JellyfinService from '../services/jellyfin';
     disableClick: {
       type: Boolean,
       required: false,
-    }
+    },
   },
 })
-export default class ItemTile extends Vue {
+class ItemTile extends Vue {
   mounted() {
     const itemUrl = JellyfinService.getItemImageUrl(this.item);
 
@@ -54,6 +54,8 @@ export default class ItemTile extends Vue {
     }
   }
 }
+
+export default ItemTile;
 </script>
 
 <style scoped>

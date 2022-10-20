@@ -6,14 +6,13 @@ import App from './App.vue';
 import router from './router';
 
 // Disable Zooming: https://github.com/electron/electron/issues/8793#issuecomment-648307765
-window.onkeydown = function(evt) {
+window.onkeydown = evt => {
   if (
-    (evt.code == 'Minus' || evt.code == 'Equal') &&
-    (evt.ctrlKey || evt.metaKey)
+    (evt.code === 'Minus' || evt.code === 'Equal') && (evt.ctrlKey || evt.metaKey)
   ) {
     evt.preventDefault();
   }
-}
+};
 
 Vue.config.productionTip = false;
 

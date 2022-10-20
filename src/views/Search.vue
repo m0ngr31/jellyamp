@@ -8,7 +8,13 @@
               <div style="display: inline-flex; width: 100%;">
                 <div style="width: 100vw">
                   <b-field>
-                    <b-input v-model="search" type="search" placeholder="Search..." icon="magnify" @input="doSearch"></b-input>
+                    <b-input
+                      v-model="search"
+                      type="search"
+                      placeholder="Search..."
+                      icon="magnify"
+                      @input="doSearch"
+                    ></b-input>
                   </b-field>
                 </div>
                 <div style="width: 15px"/>
@@ -37,14 +43,29 @@
               >
                 <b-carousel-item>
                   <div class="level-bottom level is-mobile">
-                    <div level-item class="ends" style="text-align: right; width: 30px;" @click="prev">
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px;"
+                      @click="prev"
+                    >
                       <b-icon level-item icon="chevron-left" class="pointer"></b-icon>
                     </div>
                     <div level-item class="middle" style="width: 100%; text-align: center">
                       <p class="title">Artists</p>
                     </div>
-                    <div level-item class="ends" style="text-align: right; width: 30px; margin-right: 15px" @click="next">
-                      <b-icon style="padding-top: 2em" level-item icon="chevron-right" class="pointer"></b-icon>
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px; margin-right: 15px"
+                      @click="next"
+                    >
+                      <b-icon
+                        style="padding-top: 2em"
+                        level-item
+                        icon="chevron-right"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </div>
 
@@ -59,14 +80,29 @@
                 </b-carousel-item>
                 <b-carousel-item>
                   <div class="level-bottom level is-mobile">
-                    <div level-item class="ends" style="text-align: right; width: 30px;" @click="prev">
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px;"
+                      @click="prev"
+                    >
                       <b-icon level-item icon="chevron-left" class="pointer"></b-icon>
                     </div>
                     <div level-item class="middle" style="width: 100%; text-align: center">
                       <p class="title">Albums</p>
                     </div>
-                    <div level-item class="ends" style="text-align: right; width: 30px; margin-right: 15px" @click="next">
-                      <b-icon style="padding-top: 2em" level-item icon="chevron-right" class="pointer"></b-icon>
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px; margin-right: 15px"
+                      @click="next"
+                    >
+                      <b-icon
+                        style="padding-top: 2em"
+                        level-item
+                        icon="chevron-right"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </div>
 
@@ -81,14 +117,29 @@
                 </b-carousel-item>
                 <b-carousel-item>
                   <div class="level-bottom level is-mobile">
-                    <div level-item class="ends" style="text-align: right; width: 30px;" @click="prev">
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px;"
+                      @click="prev"
+                    >
                       <b-icon level-item icon="chevron-left" class="pointer"></b-icon>
                     </div>
                     <div level-item class="middle" style="width: 100%; text-align: center">
                       <p class="title">Genres</p>
                     </div>
-                    <div level-item class="ends" style="text-align: right; width: 30px; margin-right: 15px" @click="next">
-                      <b-icon style="padding-top: 2em" level-item icon="chevron-right" class="pointer"></b-icon>
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px; margin-right: 15px"
+                      @click="next"
+                    >
+                      <b-icon
+                        style="padding-top: 2em"
+                        level-item
+                        icon="chevron-right"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </div>
 
@@ -103,14 +154,29 @@
                 </b-carousel-item>
                 <b-carousel-item>
                   <div class="level-bottom level is-mobile">
-                    <div level-item class="ends" style="text-align: right; width: 30px;" @click="prev">
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px;"
+                      @click="prev"
+                    >
                       <b-icon level-item icon="chevron-left" class="pointer"></b-icon>
                     </div>
                     <div level-item class="middle" style="width: 100%; text-align: center">
                       <p class="title">Playlists</p>
                     </div>
-                    <div level-item class="ends" style="text-align: right; width: 30px; margin-right: 15px" @click="next">
-                      <b-icon style="padding-top: 2em" level-item icon="chevron-right" class="pointer"></b-icon>
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px; margin-right: 15px"
+                      @click="next"
+                    >
+                      <b-icon
+                        style="padding-top: 2em"
+                        level-item
+                        icon="chevron-right"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </div>
 
@@ -125,20 +191,44 @@
                 </b-carousel-item>
                 <b-carousel-item>
                   <div class="level-bottom level is-mobile">
-                    <div level-item class="ends" style="text-align: right; width: 30px;" @click="prev">
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px;"
+                      @click="prev"
+                    >
                       <b-icon level-item icon="chevron-left" class="pointer"></b-icon>
                     </div>
                     <div level-item class="middle" style="width: 100%; text-align: center">
                       <p class="title">Favorites</p>
                     </div>
-                    <div level-item class="ends" style="text-align: right; width: 30px; margin-right: 15px" @click="next">
-                      <b-icon style="padding-top: 2em" level-item icon="chevron-right" class="pointer"></b-icon>
+                    <div
+                      level-item
+                      class="ends"
+                      style="text-align: right; width: 30px; margin-right: 15px"
+                      @click="next"
+                    >
+                      <b-icon
+                        style="padding-top: 2em"
+                        level-item icon="chevron-right"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </div>
 
-                  <b-tooltip label="Shuffle" position="is-right" v-if="searchService.all_favorites && searchService.all_favorites.length">
+                  <b-tooltip
+                    label="Shuffle"
+                    position="is-right"
+                    v-if="searchService.all_favorites && searchService.all_favorites.length"
+                  >
                     <div @click="playFavorites()">
-                      <b-icon level-item size="is-medium" icon="shuffle-variant" style="margin-left: 10px;" class="pointer"></b-icon>
+                      <b-icon
+                        level-item
+                        size="is-medium"
+                        icon="shuffle-variant"
+                        style="margin-left: 10px;"
+                        class="pointer"
+                      ></b-icon>
                     </div>
                   </b-tooltip>
 
@@ -199,25 +289,25 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
+import Vue from 'vue';
+import Component from 'vue-class-component';
 import _ from 'lodash';
 
-import ItemTile from "../components/ItemTile";
+import ItemTile from '../components/ItemTile.vue';
 
-import PlayerService from "../services/player";
-import JellyfinService from "../services/jellyfin";
-import SearchService from "../services/search";
+import PlayerService from '../services/player';
+import JellyfinService from '../services/jellyfin';
+import SearchService from '../services/search';
 import {getItemOrDefault} from '../services/localstorage';
 
 @Component({
-  name: "Search",
+  name: 'Search',
   components: {
-    ItemTile
-  }
+    ItemTile,
+  },
 })
-export default class Search extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class Search extends Vue {
+  isElectron = !!window.ipcRenderer;
   search = '';
   carousel = 0;
   defaultView = null;
@@ -290,7 +380,7 @@ export default class Search extends Vue {
     } else {
       this.defaultView = getItemOrDefault('view', 'Artists');
 
-      switch(this.defaultView) {
+      switch (this.defaultView) {
         case 'Albums':
           this.carousel = 1;
           break;
@@ -326,7 +416,7 @@ export default class Search extends Vue {
   }
 
   getData() {
-    switch(this.carousel) {
+    switch (this.carousel) {
       case 1:
         this.defaultView = 'Albums';
         SearchService.lastView = 1;
@@ -427,16 +517,18 @@ export default class Search extends Vue {
   }
 
   playFavorites() {
-    let songs = _.shuffle(_.cloneDeep(this.searchService.all_favorites));
+    const songs = _.shuffle(_.cloneDeep(this.searchService.all_favorites));
 
     PlayerService.setQueue(songs);
 
     this.$buefy.toast.open({
       message: 'Starting favorites',
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 }
+
+export default Search;
 </script>
 
 <style scoped>

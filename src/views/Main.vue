@@ -11,33 +11,34 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import Player from '../components/Player';
+import Player from '../components/Player.vue';
 
 import { getItemOrDefault } from '../services/localstorage';
 
 @Component({
   name: 'Main',
   components: {
-    Player
+    Player,
   },
 })
-export default class Main extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class Main extends Vue {
+  isElectron = !!window.ipcRenderer;
   player = Player;
-
 
   async mounted() {
     const checkForUpdates = getItemOrDefault('notify-of-updates', true);
 
     window.ipcRenderer.on('update-available', (event, versionInfo) => {
-        if(checkForUpdates) {
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: `Version ${versionInfo.version} for Jellyamp is available.`,
-            type: 'is-info'
-          });
-        }
+      if (checkForUpdates) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: `Version ${versionInfo.version} for Jellyamp is available.`,
+          type: 'is-info',
+        });
+      }
     });
   }
 }
+
+export default Main;
 </script>

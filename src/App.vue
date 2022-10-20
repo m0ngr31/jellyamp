@@ -24,13 +24,13 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import {Notifications} from './services/notifications';
+import Notifications from './services/notifications';
 
 @Component({
   name: 'App',
 })
-export default class App extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class App extends Vue {
+  isElectron = !!window.ipcRenderer;
   distro = process.env.VUE_APP_OS;
 
   mounted() {
@@ -49,6 +49,8 @@ export default class App extends Vue {
     }
   }
 }
+
+export default App;
 </script>
 
 <style lang="sass">

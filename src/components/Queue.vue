@@ -36,14 +36,13 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import JellyfinService from '../services/jellyfin';
 import PlayerService from '../services/player';
 
 @Component({
   name: 'Queue',
 })
-export default class Queue extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class Queue extends Vue {
+  isElectron = !!window.ipcRenderer;
   player = PlayerService;
 
   removeItem(index) {
@@ -54,6 +53,8 @@ export default class Queue extends Vue {
     PlayerService.skipTo(index);
   }
 }
+
+export default Queue;
 </script>
 
 <style scoped>

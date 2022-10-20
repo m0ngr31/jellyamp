@@ -15,7 +15,12 @@
             @keyup.native.enter="checkServer"
           ></b-input>
         </b-field>
-        <b-button type="is-primary" class="float-right" :loading="serverLoading" @click="checkServer">Test Connection</b-button>
+        <b-button
+          type="is-primary"
+          class="float-right"
+          :loading="serverLoading"
+          @click="checkServer"
+        >Test Connection</b-button>
       </section>
       <section v-if="showUser">
         <b-field label="Username">
@@ -40,7 +45,7 @@ import JellyfinService from '../services/jellyfin';
 @Component({
   name: 'Login',
 })
-export default class Login extends Vue {
+class Login extends Vue {
   serverUri = '';
   username = '';
   password = '';
@@ -69,14 +74,14 @@ export default class Login extends Vue {
 
       this.$buefy.toast.open({
         message: 'Successfully connected',
-        type: 'is-success'
+        type: 'is-success',
       });
 
       this.showUser = true;
     } catch (e) {
       this.$buefy.toast.open({
         message: 'Could not connect to server',
-        type: 'is-danger'
+        type: 'is-danger',
       });
     } finally {
       this.serverLoading = false;
@@ -95,20 +100,22 @@ export default class Login extends Vue {
 
       this.$buefy.toast.open({
         message: 'Successfully logged in',
-        type: 'is-success'
+        type: 'is-success',
       });
 
       this.$router.push({name: 'Main'});
     } catch (e) {
       this.$buefy.toast.open({
         message: 'Could not login. Check username and password',
-        type: 'is-danger'
+        type: 'is-danger',
       });
     } finally {
       this.isLoggingIn = false;
     }
   }
 }
+
+export default Login;
 </script>
 
 <style scoped>

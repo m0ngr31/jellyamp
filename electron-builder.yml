@@ -1,5 +1,5 @@
 productName: Jellyamp
-appId: me.ipson.jellyamp
+appId: me.m0ngr31.jellyamp
 compression: normal
 
 mac:
@@ -27,7 +27,6 @@ linux:
       arch:
         - x64
         - arm64
-
 
 nsis:
   artifactName: ${name}-${version}-install-${arch}.${ext}

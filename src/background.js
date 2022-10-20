@@ -21,6 +21,7 @@ autoUpdater.autoDownload = false;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+let devtools = null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -32,9 +33,9 @@ function createWindow() {
   win = new BrowserWindow({
     width: 400,
     height: 700,
-    resizable: false,
+    // resizable: false,
     maximizable: false,
-    frame: false,
+    // frame: false,
     backgroundColor: '#000B25',
     icon: path.join(__static, 'icon.png'),
     webPreferences: {
@@ -44,11 +45,15 @@ function createWindow() {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
     },
   });
+  devtools = new BrowserWindow();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
+    if (!process.env.IS_TEST) {
+      win.webContents.setDevToolsWebContents(devtools.webContents)
+      win.webContents.openDevTools({ mode: 'detach' });
+    }
   } else {
     createProtocol('app');
     // Load the index.html when not in development
@@ -94,11 +99,11 @@ if (isLinux) {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    try {
-      await installVueDevtools();
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString());
-    }
+    // try {
+    //   await installVueDevtools();
+    // } catch (e) {
+    //   console.error('Vue Devtools failed to install:', e.toString());
+    // }
   } else {}
 
   createWindow();

@@ -2,7 +2,7 @@ import {v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 
 import {getItemOrDefault, setItem} from './localstorage';
-import {Requests} from './requests';
+import Requests from './requests';
 import AuthService from './auth';
 
 const cleanUrl = url => {
@@ -15,27 +15,21 @@ const cleanUrl = url => {
   }
 
   return url;
-}
+};
 
 const JellyfinService = {
-  getUser: () => {
-    return getItemOrDefault('user', {Id: null});
-  },
-  getServer: () => {
-    return getItemOrDefault('server', {uri: null});
-  },
+  getUser: () => getItemOrDefault('user', {Id: null}),
+  getServer: () => getItemOrDefault('server', {uri: null}),
   setServer: serverData => {
     setItem('server', serverData);
   },
-  getToken: () => {
-    return getItemOrDefault('api-token', null);
-  },
+  getToken: () => getItemOrDefault('api-token', null),
   checkServer: async serverUri => {
     try {
       const url = cleanUrl(serverUri);
       const serverData = await Requests.get(`${url}system/info/public`, null, false);
 
-      JellyfinService.setServer(Object.assign({}, serverData, {uri: url}));
+      JellyfinService.setServer({...serverData, uri: url});
     } catch (e) {
       console.log(e);
       throw new Error('Server not found');
@@ -45,7 +39,7 @@ const JellyfinService = {
     try {
       const auth = await Requests.post('users/authenticatebyname', {Username: username, Pw: password}, true, false);
 
-      AuthService.login(auth.User, auth.AccessToken)
+      AuthService.login(auth.User, auth.AccessToken);
     } catch (e) {
       console.log(e);
       throw new Error('Could not login');
@@ -73,7 +67,7 @@ const JellyfinService = {
   },
   getAlbums: async () => {
     const params = {
-      SortBy:	'SortName',
+      SortBy: 'SortName',
       SortOrder: 'Ascending',
       IncludeItemTypes: 'MusicAlbum',
       Recursive: true,
@@ -91,7 +85,7 @@ const JellyfinService = {
   },
   getPlaylists: async () => {
     const params = {
-      SortBy:	'SortName',
+      SortBy: 'SortName',
       SortOrder: 'Ascending',
       IncludeItemTypes: 'Playlist',
       Recursive: true,
@@ -104,7 +98,7 @@ const JellyfinService = {
   },
   getFavorites: async () => {
     const params = {
-      SortBy:	'SortName',
+      SortBy: 'SortName',
       SortOrder: 'Ascending',
       IncludeItemTypes: 'Audio',
       Recursive: true,
@@ -170,13 +164,13 @@ const JellyfinService = {
     const res = await Requests.get(`Users/${userId}/Items`, params, true, true);
     return res.Items;
   },
-  likeId: async itemId => {
+  likeId: itemId => {
     const userId = JellyfinService.getUser().Id;
-    return await Requests.post(`Users/${userId}/FavoriteItems/${itemId}`);
+    return Requests.post(`Users/${userId}/FavoriteItems/${itemId}`);
   },
-  unlikeId: async itemId => {
+  unlikeId: itemId => {
     const userId = JellyfinService.getUser().Id;
-    return await Requests.delete(`Users/${userId}/FavoriteItems/${itemId}`);
+    return Requests.delete(`Users/${userId}/FavoriteItems/${itemId}`);
   },
   getItemImageUrl: item => {
     const serverUri = JellyfinService.getServer().uri;
@@ -185,7 +179,7 @@ const JellyfinService = {
     const albumInfo = {
       Id: item.AlbumId || null,
       Image: item.AlbumPrimaryImageTag || null,
-    }
+    };
 
     if (albumInfo.Id && albumInfo.Image) {
       return `${serverUri}Items/${albumInfo.Id}/Images/Primary`;
@@ -200,7 +194,7 @@ const JellyfinService = {
     if (keys.includes('Primary')) {
       imageKey = 'Primary';
     } else {
-      imageKey = keys[0];
+      [imageKey] = keys;
     }
 
     return `${serverUri}Items/${item.Id}/Images/${imageKey}`;
@@ -245,10 +239,10 @@ const JellyfinService = {
       AudioCodec: 'aac',
       api_key: JellyfinService.getToken(),
       PlaySessionId: uuidv4(),
-      Container: ['opus','mp3','aac','m4a','m4b','flac','wav','ogg'],
+      Container: ['opus', 'mp3', 'aac', 'm4a', 'm4b', 'flac', 'wav', 'ogg'],
     };
 
-    const urlParams = new URLSearchParams(Object.entries(params))
+    const urlParams = new URLSearchParams(Object.entries(params));
 
     const serverUri = JellyfinService.getServer().uri;
     return [`${serverUri}Audio/${itemId}/universal?${urlParams}`, params];

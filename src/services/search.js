@@ -1,4 +1,4 @@
-export const SearchService = {
+const SearchService = {
   all_artists: [],
   all_albums: [],
   all_genres: [],

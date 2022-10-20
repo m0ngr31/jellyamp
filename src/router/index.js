@@ -12,7 +12,7 @@ import Playlist from '../views/Playlist.vue';
 import Song from '../views/Song.vue';
 import Genre from '../views/Genre.vue';
 
-import JellyfinService from '../services/jellyfin';
+import {getItemOrDefault} from '../services/localstorage';
 
 Vue.use(VueRouter);
 Vue.use(Meta);
@@ -65,7 +65,7 @@ const routes = [
         name: 'Genre',
         component: Genre,
       },
-    ]
+    ],
   },
 ];
 
@@ -74,15 +74,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const currentUser = JellyfinService.getUser();
+  const currentUser = getItemOrDefault('user', {Id: null});
   const requiresAuth = to.matched.some((record) => record.meta.auth);
 
   if (requiresAuth && !currentUser.Id) {
-    await next({ name: 'Login' });
+    await next({name: 'Login'});
   } else if (!requiresAuth && currentUser.Id) {
-    await next({ name: 'Search' });
+    await next({name: 'Search'});
   } else if (to.name === 'Main') {
-    await next({ name: 'Search' });
+    await next({name: 'Search'});
   } else {
     await next();
   }

@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable object-curly-spacing */
 import {Howl, Howler} from 'howler';
 import Vue from 'vue';
 import _ from 'lodash';
 
 import JellyfinService from './jellyfin';
-import {Notifications} from './notifications';
+import Notifications from './notifications';
 
 import placeholderImg from '../assets/logo.png';
 
@@ -19,7 +21,7 @@ Vue.filter('duration', value => {
   const minutes = Math.floor(value / 60) || 0;
   const seconds = Math.round((value - minutes * 60) || 0);
 
-  return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 });
 
 class Player {
@@ -94,7 +96,7 @@ class Player {
 
     this.queue = _.map(queue, (item, index) => {
       const songUrl = JellyfinService.getItemImageUrl(item);
-      item.thumbnailImage = songUrl ? songUrl : placeholderImg;
+      item.thumbnailImage = songUrl || placeholderImg;
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
@@ -114,7 +116,7 @@ class Player {
   injectQueue(queue) {
     const updateQueue = _.map(queue, item => {
       const songUrl = JellyfinService.getItemImageUrl(item);
-      item.thumbnailImage = songUrl ? songUrl : placeholderImg;
+      item.thumbnailImage = songUrl || placeholderImg;
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
@@ -133,7 +135,7 @@ class Player {
   addToQueue(queue) {
     const updateQueue = _.map(queue, item => {
       const songUrl = JellyfinService.getItemImageUrl(item);
-      item.thumbnailImage = songUrl ? songUrl : placeholderImg;
+      item.thumbnailImage = songUrl || placeholderImg;
 
       item.artist = item.Artists[0] || item.AlbumArtist;
       item.loved = item.UserData.IsFavorite || false;
@@ -217,6 +219,7 @@ class Player {
         }
 
         if ('mediaSession' in navigator) {
+          // eslint-disable-next-line no-undef
           navigator.mediaSession.metadata = new MediaMetadata({
             title: item.Name,
             artist: item.Artists,
@@ -270,6 +273,7 @@ class Player {
       onseek: () => {
         // Just make sure seek takes off eventually
         // Can get stuck after something is buffering
+        // eslint-disable-next-line no-plusplus
         for (let a = 1; a <= 100; a++) {
           _.delay(() => this.step(), 250 * a);
         }
@@ -300,7 +304,7 @@ class Player {
           duration: 5000,
           message: 'Playback failed.',
           position: 'is-top',
-          type: 'is-danger'
+          type: 'is-danger',
         });
 
         this.numErrors += 1;
@@ -319,11 +323,11 @@ class Player {
           duration: 5000,
           message: 'Could not play song.',
           position: 'is-top',
-          type: 'is-danger'
+          type: 'is-danger',
         });
 
         this.skip('next');
-      }
+      },
     });
 
     return howl;
@@ -432,14 +436,14 @@ class Player {
   }
 
   skip(dir) {
-    let index = this.index;
+    let {index} = this;
 
     if (dir === 'next') {
       if (this.repeat === 1) {
         this.repeat = null;
       }
 
-      index = index + 1;
+      index += 1;
 
       if (index >= this.queue.length) {
         index = this.queue.length - 1;
@@ -448,7 +452,7 @@ class Player {
         this.skipTo(index);
       }
     } else {
-      index = index - 1;
+      index -= 1;
 
       if (index < 0) {
         // Don't nuke playlist when you hit back on the first item in queue
@@ -504,14 +508,13 @@ if ('mediaSession' in navigator) {
     // ['seekto', (details) => { /* ... */ }],
   ];
 
-  for (const [action, handler] of actionHandlers) {
+  actionHandlers.forEach(([action, handler]) => {
     try {
       navigator.mediaSession.setActionHandler(action, handler);
     } catch (error) {
       console.log(`The media session action "${action}" is not supported yet.`);
     }
-  }
+  });
 }
-
 
 window.PlayerService = PlayerService;

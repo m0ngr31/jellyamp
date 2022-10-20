@@ -24,14 +24,25 @@
           </div>
           <div class="level-bottom level is-mobile">
             <div level-item class="ends" style="text-align: right; width: 30px;" @click="repeat">
-              <b-icon level-item :icon="`${!player.repeat ? 'repeat-off' : player.repeat === 1 ? 'repeat-once' : 'repeat'}`" class="pointer" style="padding-top: 2em"></b-icon>
+              <b-icon
+                level-item
+                :icon="`${!player.repeat ? 'repeat-off' : player.repeat === 1 ? 'repeat-once' : 'repeat'}`"
+                class="pointer"
+                style="padding-top: 2em"
+              ></b-icon>
             </div>
             <div level-item class="middle" style="width: 100%; text-align: center">
               <h6 class="title is-5 song-title">{{ player.queue[player.index].Name }}</h6>
               <h6 class="subtitle is-6 song-title">{{ player.queue[player.index].artist }}</h6>
             </div>
             <div level-item class="ends" style="text-align: right; width: 30px;" @click="likeSong">
-              <b-icon style="padding-top: 2em" level-item :icon="`${player.queue[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.queue[player.index].loved ? 'is-danger' : ''}`" class="pointer"></b-icon>
+              <b-icon
+                style="padding-top: 2em"
+                level-item
+                :icon="`${player.queue[player.index].loved ? 'heart' : 'heart-outline'}`"
+                :type="`${player.queue[player.index].loved ? 'is-danger' : ''}`"
+                class="pointer"
+              ></b-icon>
             </div>
           </div>
           <div class="level-bottom level is-mobile" style="margin-bottom: 0">
@@ -78,7 +89,10 @@
           <div class="level-bottom level is-mobile" id="volume-slider" style="margin-top: 2em">
             <div level-item style="width: 2em">
               <span @click="toggleMute">
-                <b-icon :icon="`${isMute ? 'volume-mute' : volume < 33 ? 'volume-low' : volume < 66 ? 'volume-medium' : 'volume-high'}`" class="pointer"></b-icon>
+                <b-icon
+                  :icon="`${isMute ? 'volume-mute' : volume < 33 ? 'volume-low' : volume < 66 ? 'volume-medium' : 'volume-high'}`"
+                  class="pointer"
+                ></b-icon>
               </span>
             </div>
             <div level-item style="width: 8em">
@@ -110,7 +124,11 @@
         </div>
         <div level-right class="ends">
           <span @click="likeSong">
-            <b-icon level-item :icon="`${player.queue[player.index].loved ? 'heart' : 'heart-outline'}`" :type="`${player.queue[player.index].loved ? 'is-danger' : ''}`"></b-icon>
+            <b-icon
+              level-item
+              :icon="`${player.queue[player.index].loved ? 'heart' : 'heart-outline'}`"
+              :type="`${player.queue[player.index].loved ? 'is-danger' : ''}`"
+            ></b-icon>
           </span>
           <span @click="playPause">
             <b-icon level-item :icon="`${player.playing ? 'pause' : 'play'}`"></b-icon>
@@ -125,20 +143,19 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import JellyfinService from '../services/jellyfin';
 import PlayerService from '../services/player';
 import {getItemOrDefault, setItem} from '../services/localstorage';
 
-import Queue from '../components/Queue';
+import Queue from './Queue.vue';
 
 @Component({
   name: 'Player',
   components: {
     Queue,
-  }
+  },
 })
-export default class Player extends Vue {
-  isElectron = window.ipcRenderer ? true : false;
+class Player extends Vue {
+  isElectron = !!window.ipcRenderer;
   miniPlayer = true;
   player = PlayerService;
   currentPlayTime = 0;
@@ -194,6 +211,8 @@ export default class Player extends Vue {
     }
   }
 }
+
+export default Player;
 </script>
 
 <style scoped>

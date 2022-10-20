@@ -1,5 +1,8 @@
 <template>
-  <div class="container overflowY" :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`">
+  <div
+    class="container overflowY"
+    :style="`height: calc(100vh ${player.player ? '- 60px' : ''} ${isElectron ? '- 28px' : ''})`"
+  >
     <b-loading :active.sync="isLoading"></b-loading>
     <div v-if="!isLoading" style="padding: 10px;">
       <p level-item class="title">{{ genre.Name }}</p>
@@ -17,20 +20,40 @@
           </b-tooltip>
           <b-tooltip label="Play Genre Songs" position="is-left" v-if="genre && genre.songs && genre.songs.length">
             <div @click="playSongs()">
-              <b-icon level-item size="is-medium" icon="play-circle" style="margin-left: 10px; margin-right: 10px;" class="pointer"></b-icon>
+              <b-icon
+                level-item
+                size="is-medium"
+                icon="play-circle"
+                style="margin-left: 10px; margin-right: 10px;" class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
           <b-tooltip label="Shuffle Genre Songs" position="is-left" v-if="genre && genre.songs && genre.songs.length">
             <div @click="playSongs(true)">
-              <b-icon level-item size="is-medium" icon="shuffle-variant" style="margin-right: 10px;" class="pointer"></b-icon>
+              <b-icon
+                level-item
+                size="is-medium"
+                icon="shuffle-variant"
+                style="margin-right: 10px;"
+                class="pointer"
+              ></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Inject Genre Songs into current queue" position="is-left" v-if="genre && genre.songs && genre.songs.length">
+          <b-tooltip
+            label="Inject Genre Songs into current queue"
+            position="is-left"
+            v-if="genre && genre.songs && genre.songs.length"
+          >
             <div @click="playSongs(false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="needle" class="pointer"></b-icon>
             </div>
           </b-tooltip>
-          <b-tooltip label="Add Genre Songs to current queue" position="is-left" v-if="genre && genre.songs && genre.songs.length" style="margin-left: 10px;">
+          <b-tooltip
+            label="Add Genre Songs to current queue"
+            position="is-left"
+            v-if="genre && genre.songs && genre.songs.length"
+            style="margin-left: 10px;"
+          >
             <div @click="playSongs(false, false, true)">
               <b-icon v-if="player.player" level-item size="is-medium" icon="playlist-plus" class="pointer"></b-icon>
             </div>
@@ -63,19 +86,19 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 
 import JellyfinService from '../services/jellyfin';
-import ItemTile from "../components/ItemTile";
+import ItemTile from '../components/ItemTile.vue';
 import PlayerService from '../services/player';
 
 @Component({
   name: 'Genre',
   components: {
-    ItemTile
-  }
+    ItemTile,
+  },
 })
-export default class Genre extends Vue {
+class Genre extends Vue {
   isLoading = false;
   genre = {};
-  isElectron = window.ipcRenderer ? true : false;
+  isElectron = !!window.ipcRenderer;
   player = PlayerService;
 
   mounted() {
@@ -100,7 +123,7 @@ export default class Genre extends Vue {
       console.log(e);
       this.$buefy.toast.open({
         message: 'Could not get genre',
-        type: 'is-danger'
+        type: 'is-danger',
       });
 
       this.goBack();
@@ -115,7 +138,7 @@ export default class Genre extends Vue {
 
     this.$buefy.toast.open({
       message: 'Starting genre radio',
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 
@@ -141,10 +164,12 @@ export default class Genre extends Vue {
 
     this.$buefy.toast.open({
       message,
-      type: 'is-success'
+      type: 'is-success',
     });
   }
 }
+
+export default Genre;
 </script>
 
 <style>

@@ -12,8 +12,8 @@ module.exports = {
       },
       nodeIntegration: true,
       builderOptions: {
-        publish: ['github']
-      }
+        publish: ['github'],
+      },
     },
   },
 };
