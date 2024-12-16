@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-latest]
+        os: [macos-13, ubuntu-20.04, windows-latest]
 
     steps:
       - name: Check out Git repository
@@ -24,6 +24,13 @@ jobs:
 
       - run: npm i -g npm@7
       - run: npm ci
+
+      - name: Install distutils on macOS
+        if: runner.os == 'macOS'
+        run: |
+          python3 -m ensurepip
+          python3 -m pip install --upgrade pip setuptools
+
       - run: npm run electron:build -p always
         env:
           GH_TOKEN: ${{ secrets.github_token }}
