@@ -22,14 +22,14 @@ jobs:
         with:
           node-version: 14
 
-      - run: npm i -g npm@7
-      - run: npm ci
-
       - name: Install distutils on macOS
         if: runner.os == 'macOS'
         run: |
           python3 -m ensurepip
           python3 -m pip install --upgrade pip setuptools
+
+      - run: npm i -g npm@7
+      - run: npm ci
 
       - run: npm run electron:build -p always
         env:
