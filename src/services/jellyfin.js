@@ -33,7 +33,7 @@ const JellyfinService = {
   checkServer: async serverUri => {
     try {
       const url = cleanUrl(serverUri);
-      const serverData = await Requests.get(`${url}system/info/public`, null, false);
+      const serverData = await Requests.get(`${url}System/Info/Public`, null, false);
 
       JellyfinService.setServer(Object.assign({}, serverData, {uri: url}));
     } catch (e) {
@@ -241,14 +241,17 @@ const JellyfinService = {
     const params = {
       UserId: JellyfinService.getUser().Id,
       DeviceId: getItemOrDefault('deviceId', null),
-      MaxStreamingBitrate: getItemOrDefault('bitrate', '12444445'),
+      MaxStreamingBitrate: getItemOrDefault('bitrate', '142352136'),
       AudioCodec: 'aac',
       api_key: JellyfinService.getToken(),
       PlaySessionId: uuidv4(),
-      Container: ['opus','mp3','aac','m4a','m4b','flac','wav','ogg'],
+      Container: ['opus','webm|opus','ts|mp3','mp3','aac','m4a|aac','m4b|aac','flac,webma','webm|webma','wav','ogg'],
+      TranscodingContainer: 'mp4',
+      TranscodingProtocol: 'http',
+      EnableRemoteMedia: false,
     };
 
-    const urlParams = new URLSearchParams(Object.entries(params))
+    const urlParams = new URLSearchParams(Object.entries(params));
 
     const serverUri = JellyfinService.getServer().uri;
     return [`${serverUri}Audio/${itemId}/universal?${urlParams}`, params];

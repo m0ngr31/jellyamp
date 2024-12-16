@@ -86,7 +86,7 @@ export const Requests = {
     const reqestHandler = requiresAuth ? authAxios : axios;
 
     if (obj) {
-      config.params = obj;
+      config.params = new URLSearchParams(obj);
     }
 
     const {data} = await reqestHandler.get(uri, config);

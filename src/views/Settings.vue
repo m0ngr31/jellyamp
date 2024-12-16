@@ -22,7 +22,7 @@
             <div class="column">
               <b-field label="Quality" style="margin-top: 20px;">
                 <b-select placeholder="Select a bitrate" v-model="quality" @input="bitrateChanged">
-                  <option value="12444445">Unlimited</option>
+                  <option value="142352136">Unlimited</option>
                   <option value="320000">320 Kbps</option>
                   <option value="256000">256 Kbps</option>
                   <option value="128000">128 Kbps</option>
@@ -73,7 +73,7 @@ export default class Settings extends Vue {
   player = PlayerService;
 
   mounted() {
-    this.quality = getItemOrDefault('bitrate', '12444445');
+    this.quality = getItemOrDefault('bitrate', '142352136');
     this.notifyOfUpdates = getItemOrDefault('notify-of-updates', true);
     this.view = getItemOrDefault('view', 'Artists');
   }
